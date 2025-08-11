@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:restureant_app/onboarding_pages/onboard1.dart';
+//import 'package:restureant_app/onboarding_pages/onboard2.dart';
 
 class HotboxKitchenScreen extends StatelessWidget {
   const HotboxKitchenScreen({Key? key}) : super(key: key);
@@ -25,22 +27,6 @@ class HotboxKitchenScreen extends StatelessWidget {
               const SizedBox(height: 60),
 
               // Status bar indicator (iPhone 14 & 15 Pro - 1)
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'iPhone 14 & 15 Pro - 1',
-                      style: GoogleFonts.inter(
-                        color: Colors.white,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
 
               // Main content - centered
               Expanded(
@@ -49,11 +35,11 @@ class HotboxKitchenScreen extends StatelessWidget {
                   children: [
                     // Chef hat image
                     Container(
-                      width: 100,
-                      height: 100,
+                      width: 140,
+                      height: 140,
                       decoration: const BoxDecoration(
                         image: DecorationImage(
-                          image: AssetImage('assets/images/gImg.png'),
+                          image: AssetImage('assets/images/hat.png'),
                           fit: BoxFit.contain,
                         ),
                       ),
@@ -101,8 +87,13 @@ class HotboxKitchenScreen extends StatelessWidget {
                     color: Colors.transparent,
                     child: InkWell(
                       onTap: () {
-                        // Handle get started button tap
-                        print('Get Started button tapped');
+                        // Navigate to OnboardingPage
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => OnboardingPage(),
+                          ),
+                        );
                       },
                       borderRadius: BorderRadius.circular(12),
                       child: Container(

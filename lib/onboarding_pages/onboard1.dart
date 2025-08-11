@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:restureant_app/onboarding_pages/onboard2.dart';
 
 class OnboardingPage extends StatefulWidget {
   const OnboardingPage({Key? key}) : super(key: key);
@@ -22,13 +23,13 @@ class _OnboardingPageState extends State<OnboardingPage> {
             currentPage = page;
           });
 
-          // Navigate to Onboard2 when swiped to page
           if (page == 1) {
-            // Add a small delay to ensure smooth transition
             Future.delayed(const Duration(milliseconds: 300), () {
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(builder: (context) => const OnboardingPage()),
+                MaterialPageRoute(
+                  builder: (context) => const OnboardingPageTwo(),
+                ),
               );
             });
           }
@@ -39,19 +40,20 @@ class _OnboardingPageState extends State<OnboardingPage> {
   }
 
   Widget _buildOnboardingScreen() {
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
+
     return Container(
-      color: const Color(0xFF212121), // Set background color to #212121
+      color: const Color(0xFF212121),
       child: Stack(
         children: [
-          // Background image with opacity to show the container color
           Positioned.fill(
             child: Opacity(
-              opacity: 0.7, // Adjust opacity to blend with background color
+              opacity: 0.7,
               child: Image.asset(
                 'assets/images/bgImg.png',
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) {
-                  // Fallback if image fails to load
                   return Container(
                     color: const Color(0xFF212121),
                     child: const Center(
@@ -66,87 +68,75 @@ class _OnboardingPageState extends State<OnboardingPage> {
               ),
             ),
           ),
-          // Main content
           SafeArea(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24.0),
               child: Column(
                 children: [
-                  const Spacer(flex: 2),
-
-                  // Chef hat image
+                  const Spacer(flex: 1), // Flexible spacing at the top
                   Image.asset(
                     'assets/images/hat.png',
-                    height: 80,
-                    width: 80,
+                    height: screenHeight * 0.15, // Responsive height
+                    width: screenHeight * 0.15, // Responsive width
+                    fit: BoxFit.contain,
                     errorBuilder: (context, error, stackTrace) {
                       return Container(
-                        height: 80,
-                        width: 80,
+                        height: screenHeight * 0.1,
+                        width: screenHeight * 0.1,
                         decoration: BoxDecoration(
                           color: Colors.white24,
-                          borderRadius: BorderRadius.circular(40),
+                          borderRadius: BorderRadius.circular(
+                            screenHeight * 0.05,
+                          ),
                         ),
-                        child: const Icon(
+                        child: Icon(
                           Icons.restaurant,
                           color: Colors.white,
-                          size: 40,
+                          size: screenHeight * 0.05,
                         ),
                       );
                     },
                   ),
-
-                  const SizedBox(height: 20),
-
-                  // Main title
+                  const Spacer(flex: 1), // Flexible spacing
                   Text(
                     'Hotbox Kitchen',
                     style: GoogleFonts.belgrano(
-                      fontSize: 28,
+                      fontSize: screenWidth * 0.07, // Responsive font size
                       fontWeight: FontWeight.w600,
                       color: Colors.white,
                     ),
                     textAlign: TextAlign.center,
                   ),
-
-                  const SizedBox(height: 30),
-
-                  // First description paragraph
+                  const Spacer(flex: 1), // Flexible spacing
                   Text(
                     'At Hotbox Kitchen, we believe food should be fresh, clean, and nourishing. Our dishes are crafted using local, organic ingredients to help you feel good inside and out.',
                     style: GoogleFonts.roboto(
-                      fontSize: 16,
+                      fontSize: screenWidth * 0.04, // Responsive font size
                       color: Colors.white.withOpacity(0.9),
                       height: 1.5,
                     ),
                     textAlign: TextAlign.center,
                   ),
-
-                  const SizedBox(height: 20),
-
-                  // Second description paragraph
+                  const Spacer(flex: 1), // Flexible spacing
                   Text(
                     'Experience the perfect blend of taste and wellness with every meal. From farm to table, we ensure quality in every bite.',
                     style: GoogleFonts.roboto(
-                      fontSize: 16,
+                      fontSize: screenWidth * 0.04, // Responsive font size
                       color: Colors.white.withOpacity(0.9),
                       height: 1.5,
                     ),
                     textAlign: TextAlign.center,
                   ),
-
-                  const Spacer(flex: 2),
-
-                  // Yellow character image with error handling
+                  const Spacer(flex: 2), // More flexible spacing
                   Image.asset(
                     'assets/images/init_one.png',
-                    height: 296,
-                    width: 296,
+                    height: screenHeight * 0.35, // Responsive height
+                    width: screenHeight * 0.35, // Responsive width
                     fit: BoxFit.contain,
                     errorBuilder: (context, error, stackTrace) {
                       return Container(
-                        height: 296,
-                        width: 296,
+                        height: screenHeight * 0.35,
+                        width: screenHeight * 0.35,
                         decoration: BoxDecoration(
                           color: Colors.orange.withOpacity(0.3),
                           borderRadius: BorderRadius.circular(20),
@@ -154,69 +144,40 @@ class _OnboardingPageState extends State<OnboardingPage> {
                       );
                     },
                   ),
-
-                  const Spacer(flex: 1),
-
-                  // Page indicator dots
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: List.generate(3, (index) {
-                      return Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 4),
-                        width: index == currentPage ? 12 : 8,
-                        height: 8,
-                        decoration: BoxDecoration(
-                          color: index == currentPage
-                              ? Colors.white
-                              : Colors.white.withOpacity(0.4),
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                      );
-                    }),
-                  ),
-
-                  const SizedBox(height: 20),
-
-                  // Swipe indicator with tap functionality
-                  GestureDetector(
-                    onTap: () {
-                      // Allow tap to continue as well
-                      _pageController.nextPage(
-                        duration: const Duration(milliseconds: 100),
-                        curve: Curves.easeInOut,
-                      );
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 8,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.2),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            'Swipe right to continue',
-                            style: GoogleFonts.roboto(
-                              fontSize: 12,
-                              color: Colors.white.withOpacity(0.8),
+                  const Spacer(flex: 2), // More flexible spacing
+                  Container(
+                    padding: EdgeInsets.only(bottom: screenHeight * 0.03),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        // Dynamic dots based on currentPage
+                        ...List.generate(2, (index) {
+                          return Container(
+                            margin: const EdgeInsets.symmetric(horizontal: 4),
+                            width: 12,
+                            height: 12,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: currentPage == index
+                                  ? const Color(0xFFC79836)
+                                  : Colors.white,
                             ),
+                          );
+                        }),
+                        // The third dot, which is always inactive in this setup
+                        Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 4),
+                          width: 12,
+                          height: 12,
+                          decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.white,
                           ),
-                          const SizedBox(width: 8),
-                          Icon(
-                            Icons.arrow_forward_ios,
-                            size: 12,
-                            color: Colors.white.withOpacity(0.8),
-                          ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
-
-                  const SizedBox(height: 20),
+                  const Spacer(flex: 1), // Flexible spacing at the bottom
                 ],
               ),
             ),
@@ -251,32 +212,5 @@ class _OnboardingPageState extends State<OnboardingPage> {
   void dispose() {
     _pageController.dispose();
     super.dispose();
-  }
-}
-
-// Placeholder for Onboard2 class
-class Onboard2 extends StatelessWidget {
-  const Onboard2({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFF212121),
-      appBar: AppBar(
-        title: const Text('Onboard 2'),
-        backgroundColor: Colors.orange,
-        foregroundColor: Colors.white,
-      ),
-      body: const Center(
-        child: Text(
-          'Welcome to Onboard2!',
-          style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
-        ),
-      ),
-    );
   }
 }
