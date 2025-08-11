@@ -22,7 +22,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
             currentPage = page;
           });
 
-          // Navigate to Onboard2 when swiped to page 1
+          // Navigate to Onboard2 when swiped to page
           if (page == 1) {
             // Add a small delay to ensure smooth transition
             Future.delayed(const Duration(milliseconds: 300), () {
