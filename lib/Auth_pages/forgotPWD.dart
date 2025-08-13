@@ -2,79 +2,74 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:restureant_app/Auth_pages/loginPage.dart';
 
-// Import the LoginScreen from your main file to enable navigation.
-
-class SignUpScreen extends StatefulWidget {
-  const SignUpScreen({super.key});
+class ForgotPassword extends StatefulWidget {
+  const ForgotPassword({super.key});
 
   @override
-  State<SignUpScreen> createState() => _SignUpScreenState();
+  State<ForgotPassword> createState() => _ForgotPasswordState();
 }
 
-class _SignUpScreenState extends State<SignUpScreen> {
-  // Controllers for the text fields to access their values.
+class _ForgotPasswordState extends State<ForgotPassword> {
   final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController = TextEditingController();
-
-  // A GlobalKey to access and validate the Form state.
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
   void dispose() {
-    // Dispose of the controllers to prevent memory leaks.
     _emailController.dispose();
-    _passwordController.dispose();
-    _confirmPasswordController.dispose();
     super.dispose();
   }
 
-  // Handle the "Create Account" button press.
-  void _handleCreateAccount() {
-    // Validate the form before proceeding.
+  void _handleSendResetLink() {
     if (_formKey.currentState!.validate()) {
-      // Print the values for demonstration purposes.
-      print('Email: ${_emailController.text}');
-      print('Password: ${_passwordController.text}');
-
-      // Show a snackbar as a confirmation.
+      print('Sending reset link to: ${_emailController.text}');
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Account creation functionality would be implemented here'),
+          content: Text('A password reset link has been sent.'),
           backgroundColor: Colors.green,
         ),
       );
     }
   }
 
-  // Handle the "Return To Login" button press.
   void _handleReturnToLogin() {
-    // Navigate back to the LoginScreen.
     Navigator.of(context).pushReplacement(
-      MaterialPageRoute(
-        builder: (context) => const LoginScreen(),
-      ),
+      MaterialPageRoute(builder: (context) => const LoginScreen()),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    // The background color and image for the login screen.
+    // Get the screen height
+    final screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
       body: Container(
         width: double.infinity,
         height: double.infinity,
         decoration: const BoxDecoration(
           color: Color(0xFF212121),
+          image: DecorationImage(
+            image: AssetImage('assets/images/bgImg.png'),
+            fit: BoxFit.cover,
+          ),
         ),
         child: SafeArea(
           child: SingleChildScrollView(
             padding: const EdgeInsets.symmetric(horizontal: 24.0),
             child: Column(
               children: [
-                const SizedBox(height: 80),
+                // Use a percentage of the screen height for spacing
+                SizedBox(height: screenHeight * 0.1),
 
-                // App Title
+                // Hat image with a height based on screen height
+                Image.asset(
+                  'assets/images/hat.png',
+                  height:
+                      screenHeight * 0.12, // Adjust the percentage as needed
+                ),
+
+                SizedBox(height: screenHeight * 0.02),
+
                 Text(
                   'Hotbox Kitchen',
                   style: GoogleFonts.belgrano(
@@ -85,185 +80,129 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ),
                 ),
 
-                const SizedBox(height: 60),
+                SizedBox(height: screenHeight * 0.08),
 
-                // Sign Up Form Container
                 Container(
                   padding: const EdgeInsets.all(24.0),
                   decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.7),
+                    gradient: const LinearGradient(
+                      colors: [Color(0xFF2B3237), Color(0xFF1A1D1F)],
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                    ),
                     borderRadius: BorderRadius.circular(16),
                     border: Border.all(
-                      color: Colors.white.withOpacity(0.2),
-                      width: 1,
+                      color: const Color(0xFF5A9EFF),
+                      width: 1.5,
                     ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.white.withOpacity(0.05),
+                        blurRadius: 20,
+                        spreadRadius: 5,
+                      ),
+                    ],
                   ),
                   child: Form(
                     key: _formKey,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Center(
+                        Center(
                           child: Text(
-                            'Sign Up',
-                            style: TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.w600,
+                            'Reset your Password',
+                            style: const TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w700,
                               color: Colors.white,
+                              fontFamily: 'Inter',
                             ),
                           ),
                         ),
-
-                        const SizedBox(height: 30),
-
-                        const Text(
-                          'Email',
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.white,
-                            fontWeight: FontWeight.w500,
+                        SizedBox(height: screenHeight * 0.015),
+                        Center(
+                          child: Text(
+                            'Enter your registered phone number or\nemail to receive a reset link',
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                              fontFamily: 'Inter',
+                            ),
                           ),
                         ),
-
-                        const SizedBox(height: 8),
-
+                        SizedBox(height: screenHeight * 0.04),
+                        const Text(
+                          'Phone number/ Email',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w400,
+                            fontFamily: 'Inter',
+                          ),
+                        ),
+                        SizedBox(height: screenHeight * 0.01),
                         TextFormField(
                           controller: _emailController,
                           keyboardType: TextInputType.emailAddress,
-                          style: const TextStyle(color: Colors.black),
+                          style: const TextStyle(
+                            color: Color(0xFFD1D1D1),
+                            fontFamily: 'Inter',
+                            fontWeight: FontWeight.w400,
+                          ),
                           decoration: InputDecoration(
                             filled: true,
-                            fillColor: const Color(0xFFF5F5DC),
+                            fillColor: const Color(0xFFF9F7E9),
                             border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
+                              borderRadius: BorderRadius.circular(24),
                               borderSide: BorderSide.none,
                             ),
                             contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 16,
+                              horizontal: 20,
                               vertical: 14,
                             ),
-                            hintText: 'Enter your email address',
+                            hintText:
+                                'Enter your registered phone number / email',
+                            hintStyle: TextStyle(
+                              color: Colors.grey.shade400,
+                              fontFamily: 'Inter',
+                              fontWeight: FontWeight.w400,
+                            ),
                           ),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'Please enter your email';
-                            }
-                            if (!value.contains('@')) {
-                              return 'Please enter a valid email';
+                              return 'Please enter your phone number or email';
                             }
                             return null;
                           },
                         ),
-
-                        const SizedBox(height: 20),
-
-                        const Text(
-                          'Password',
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.white,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-
-                        const SizedBox(height: 8),
-
-                        TextFormField(
-                          controller: _passwordController,
-                          obscureText: true,
-                          style: const TextStyle(color: Colors.black),
-                          decoration: InputDecoration(
-                            filled: true,
-                            fillColor: const Color(0xFFF5F5DC),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
-                              borderSide: BorderSide.none,
-                            ),
-                            contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 16,
-                              vertical: 14,
-                            ),
-                            hintText: 'Enter your password',
-                          ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter a password';
-                            }
-                            if (value.length < 6) {
-                              return 'Password must be at least 6 characters';
-                            }
-                            return null;
-                          },
-                        ),
-
-                        const SizedBox(height: 20),
-
-                        const Text(
-                          'Confirm Password',
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.white,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-
-                        const SizedBox(height: 8),
-
-                        TextFormField(
-                          controller: _confirmPasswordController,
-                          obscureText: true,
-                          style: const TextStyle(color: Colors.black),
-                          decoration: InputDecoration(
-                            filled: true,
-                            fillColor: const Color(0xFFF5F5DC),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
-                              borderSide: BorderSide.none,
-                            ),
-                            contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 16,
-                              vertical: 14,
-                            ),
-                            hintText: 'Re-enter your password',
-                          ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please confirm your password';
-                            }
-                            if (value != _passwordController.text) {
-                              return 'Passwords do not match';
-                            }
-                            return null;
-                          },
-                        ),
-
-                        const SizedBox(height: 30),
-
+                        SizedBox(height: screenHeight * 0.04),
                         SizedBox(
                           width: double.infinity,
-                          height: 50,
+                          height: screenHeight * 0.06,
                           child: ElevatedButton(
-                            onPressed: _handleCreateAccount,
+                            onPressed: _handleSendResetLink,
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFFB8860B),
+                              backgroundColor: const Color(0xFFB88B0D),
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
+                                borderRadius: BorderRadius.circular(24),
                               ),
-                              elevation: 2,
+                              elevation: 0,
                             ),
                             child: const Text(
-                              'Create Account',
+                              'Send Reset Link',
                               style: TextStyle(
                                 fontSize: 16,
-                                fontWeight: FontWeight.w600,
+                                fontWeight: FontWeight.w700,
                                 color: Colors.white,
+                                fontFamily: 'Inter',
                               ),
                             ),
                           ),
                         ),
-
-                        const SizedBox(height: 20),
-
+                        SizedBox(height: screenHeight * 0.025),
                         Align(
                           alignment: Alignment.center,
                           child: TextButton.icon(
@@ -277,8 +216,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               'Return To Login',
                               style: TextStyle(
                                 color: Colors.white,
-                                fontSize: 14,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w700,
+                                fontFamily: 'Inter',
                               ),
+                            ),
+                            style: TextButton.styleFrom(
+                              padding: EdgeInsets.zero,
+                              minimumSize: const Size(0, 0),
+                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                             ),
                           ),
                         ),
@@ -286,8 +232,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ),
                   ),
                 ),
-
-                const SizedBox(height: 40),
+                SizedBox(height: screenHeight * 0.05),
               ],
             ),
           ),

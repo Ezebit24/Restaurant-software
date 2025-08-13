@@ -1,24 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Hotbox Kitchen',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFFB8860B)),
-        useMaterial3: true,
-      ),
-      home: const LoginScreen(),
-    );
-  }
-}
+// Assuming forgotPWD.dart exists in the same directory or a similar path.
+// If not, you might need to adjust this import.
+import 'package:restureant_app/Auth_pages/forgotPWD.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -137,10 +122,10 @@ class _LoginScreenState extends State<LoginScreen> {
                 Container(
                   padding: const EdgeInsets.all(24.0),
                   decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.7),
-                    borderRadius: BorderRadius.circular(16),
+                    color: const Color(0xFF2F3A3A),
+                    borderRadius: BorderRadius.circular(12),
                     border: Border.all(
-                      color: Colors.white.withOpacity(0.2),
+                      color: const Color(0xFF7A5F9E),
                       width: 1,
                     ),
                   ),
@@ -149,44 +134,46 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Center(
+                        Center(
                           child: Text(
                             'Log In',
-                            style: TextStyle(
-                              fontSize: 24,
+                            style: const TextStyle(
+                              fontSize: 18,
                               fontWeight: FontWeight.w600,
                               color: Colors.white,
+                              fontFamily: 'Inter',
                             ),
                           ),
                         ),
-
-                        const SizedBox(height: 30),
-
+                        const SizedBox(height: 24),
                         const Text(
                           'Email',
                           style: TextStyle(
-                            fontSize: 16,
+                            fontSize: 14,
                             color: Colors.white,
-                            fontWeight: FontWeight.w500,
+                            fontWeight: FontWeight.w600,
+                            fontFamily: 'Inter',
                           ),
                         ),
-
                         const SizedBox(height: 8),
-
                         TextFormField(
                           controller: _emailController,
                           keyboardType: TextInputType.emailAddress,
-                          style: const TextStyle(color: Colors.black),
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.w600,
+                            fontFamily: 'Inter',
+                          ),
                           decoration: InputDecoration(
                             filled: true,
-                            fillColor: const Color(0xFFF5F5DC),
+                            fillColor: const Color(0xFFFFFCE6),
                             border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
+                              borderRadius: BorderRadius.circular(30),
                               borderSide: BorderSide.none,
                             ),
                             contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 16,
-                              vertical: 14,
+                              horizontal: 20,
+                              vertical: 16,
                             ),
                           ),
                           validator: (value) {
@@ -199,34 +186,35 @@ class _LoginScreenState extends State<LoginScreen> {
                             return null;
                           },
                         ),
-
                         const SizedBox(height: 20),
-
                         const Text(
                           'Password',
                           style: TextStyle(
-                            fontSize: 16,
+                            fontSize: 14,
                             color: Colors.white,
-                            fontWeight: FontWeight.w500,
+                            fontWeight: FontWeight.w600,
+                            fontFamily: 'Inter',
                           ),
                         ),
-
                         const SizedBox(height: 8),
-
                         TextFormField(
                           controller: _passwordController,
                           obscureText: true,
-                          style: const TextStyle(color: Colors.black),
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.w600,
+                            fontFamily: 'Inter',
+                          ),
                           decoration: InputDecoration(
                             filled: true,
-                            fillColor: const Color(0xFFF5F5DC),
+                            fillColor: const Color(0xFFFFFCE6),
                             border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
+                              borderRadius: BorderRadius.circular(30),
                               borderSide: BorderSide.none,
                             ),
                             contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 16,
-                              vertical: 14,
+                              horizontal: 20,
+                              vertical: 16,
                             ),
                           ),
                           validator: (value) {
@@ -239,76 +227,78 @@ class _LoginScreenState extends State<LoginScreen> {
                             return null;
                           },
                         ),
-
-                        const SizedBox(height: 16),
-
+                        const SizedBox(height: 12),
                         Align(
                           alignment: Alignment.centerRight,
                           child: TextButton(
-                            onPressed: _handleForgotPassword,
+                            onPressed: () {
+                              // This is the navigation logic
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const ForgotPassword(),
+                                ),
+                              );
+                            },
                             child: const Text(
                               'Forgot password?',
                               style: TextStyle(
-                                color: Colors.white70,
-                                fontSize: 14,
+                                color: Colors.white,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w400,
+                                fontFamily: 'Inter',
                               ),
                             ),
                           ),
                         ),
-
-                        const SizedBox(height: 20),
-
+                        const SizedBox(height: 12),
                         SizedBox(
                           width: double.infinity,
-                          height: 50,
+                          height: 44,
                           child: ElevatedButton(
                             onPressed: _handleLogin,
                             style: ElevatedButton.styleFrom(
                               backgroundColor: const Color(0xFFB8860B),
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
+                                borderRadius: BorderRadius.circular(30),
                               ),
-                              elevation: 2,
+                              elevation: 0,
                             ),
                             child: const Text(
-                              'Log In',
+                              'Log in',
                               style: TextStyle(
-                                fontSize: 16,
+                                fontSize: 14,
                                 fontWeight: FontWeight.w600,
                                 color: Colors.white,
+                                fontFamily: 'Inter',
                               ),
                             ),
                           ),
                         ),
-
                         const SizedBox(height: 16),
-
                         SizedBox(
                           width: double.infinity,
-                          height: 50,
+                          height: 44,
                           child: ElevatedButton(
                             onPressed: _handleContactAdmin,
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFFFFD700),
+                              backgroundColor: const Color(0xFFFFEA00),
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
+                                borderRadius: BorderRadius.circular(30),
                               ),
-                              elevation: 2,
+                              elevation: 0,
                             ),
                             child: const Text(
                               'Contact Admin',
                               style: TextStyle(
-                                fontSize: 16,
+                                fontSize: 14,
                                 fontWeight: FontWeight.w600,
                                 color: Colors.black,
+                                fontFamily: 'Inter',
                               ),
                             ),
                           ),
                         ),
-                        const SizedBox(height: 10),
-                        // Added a SizedBox to provide some spacing at the bottom
-                        // to prevent the SingleChildScrollView from having a
-                        // completely empty space at the bottom.
                       ],
                     ),
                   ),

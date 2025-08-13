@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-//import 'package:restureant_app/onboarding_pages/onboard1.dart';
-//import 'package:restureant_app/Auth_pages/loginPage.dart';
-//import 'package:restureant_app/Auth_pages/signUp.dart';
+import 'package:restureant_app/Pages/home.dart';
 import 'package:restureant_app/onboarding_pages/initial_page.dart';
 
 void main() {
@@ -15,7 +13,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(primarySwatch: Colors.blue),
-      home: HotboxKitchenScreen(),
+      home: HomePage(),
     );
   }
 }
