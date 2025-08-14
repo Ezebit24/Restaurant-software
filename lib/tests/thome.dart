@@ -1,8 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:restureant_app/Components/navbar.dart';
 
-class HomePage extends StatelessWidget {
-  const HomePage({Key? key}) : super(key: key);
+// Assuming you have a separate file for your BottomNavigation class,
+// you would need to import it like this:
+// import 'path/to/bottom_navigation.dart';
+
+// This is a placeholder for your BottomNavigation widget to make the code runnable.
+// You should replace this with your actual BottomNavigation class.
+
+class Thome extends StatelessWidget {
+  const Thome({Key? key}) : super(key: key);
 
   Widget buildCard({
     required String imageUrl,
@@ -305,40 +313,38 @@ class HomePage extends StatelessWidget {
                 padding: const EdgeInsets.all(20),
                 child: GridView.builder(
                   shrinkWrap: true,
-                  // Remove this line to enable scrolling for the GridView itself
-                  // physics: const NeverScrollableScrollPhysics(),
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
-                    crossAxisSpacing: 15,
-                    mainAxisSpacing: 15,
+                    crossAxisSpacing: 16,
+                    mainAxisSpacing: 16,
                     childAspectRatio: 0.85,
                   ),
                   itemCount: 4,
                   itemBuilder: (context, index) {
                     final cards = [
                       {
-                        'image': 'assets/images/active_order.png',
+                        'image': 'assets/images/active.png',
                         'title': 'Active Order',
                         'subtitle': 'Something short and simple here',
                         'button': 'View',
                       },
                       {
-                        'image': 'assets/images/staff_duty.png',
+                        'image': 'assets/images/staff.png',
                         'title': 'Staff on Duty',
                         'subtitle': 'Something short and simple here',
                         'button': 'View',
                       },
                       {
-                        'image': 'assets/images/table_status.png',
+                        'image': 'assets/images/tatus.png',
                         'title': 'Table Status',
                         'subtitle': 'Something short and simple here',
                         'button': 'View',
                       },
                       {
-                        'image': 'assets/images/inventory_alert.png',
+                        'image': 'assets/images/inventory.png',
                         'title': 'Inventory Alert',
                         'subtitle': 'Something short and simple here',
-                        'button': 'Button',
+                        'button': 'View',
                       },
                     ];
 
@@ -357,64 +363,7 @@ class HomePage extends StatelessWidget {
         ),
       ),
       // Bottom Navigation
-      bottomNavigationBar: Container(
-        margin: const EdgeInsets.all(20),
-        height: 70,
-        decoration: BoxDecoration(
-          color: Colors.black87,
-          borderRadius: BorderRadius.circular(35),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.2),
-              blurRadius: 10,
-              offset: const Offset(0, 5),
-            ),
-          ],
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            _buildNavItem('assets/images/home_icon.png', 'Home', true),
-            _buildNavItem('assets/images/kitchen.png', 'Orders', false),
-            _buildNavItem('assets/images/chef-hat.png', 'Chef', false),
-            _buildNavItem('assets/images/user.png', 'Profile', false),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildNavItem(String imageUrl, String label, bool isActive) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      decoration: BoxDecoration(
-        color: isActive ? Colors.white.withOpacity(0.1) : Colors.transparent,
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          SizedBox(
-            width: 22,
-            height: 22,
-            child: Image.asset(
-              imageUrl,
-              color: Colors.white,
-              errorBuilder: (context, error, stackTrace) =>
-                  const Icon(Icons.error, color: Colors.white, size: 22),
-            ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            label,
-            style: GoogleFonts.inter(
-              color: Colors.white,
-              fontSize: 10,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        ],
-      ),
+      bottomNavigationBar: BottomNavigation(),
     );
   }
 }

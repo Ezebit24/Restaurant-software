@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 // Assuming forgotPWD.dart exists in the same directory or a similar path.
 // If not, you might need to adjust this import.
 import 'package:restureant_app/Auth_pages/forgotPWD.dart';
+import 'package:restureant_app/Screens/home.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -36,12 +37,10 @@ class _LoginScreenState extends State<LoginScreen> {
       print('Email: ${_emailController.text}');
       print('Password: ${_passwordController.text}');
 
-      // Show a snackbar as a confirmation.
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Login functionality would be implemented here'),
-          backgroundColor: Colors.green,
-        ),
+      // Navigate to the HomePage if validation passes.
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const HomePage()),
       );
     }
   }
@@ -256,6 +255,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           width: double.infinity,
                           height: 44,
                           child: ElevatedButton(
+                            // Call the new _handleLogin function here
                             onPressed: _handleLogin,
                             style: ElevatedButton.styleFrom(
                               backgroundColor: const Color(0xFFB8860B),

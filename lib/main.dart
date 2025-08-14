@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:restureant_app/Pages/home.dart';
+import 'package:restureant_app/Screens/chefdash.dart';
+import 'package:restureant_app/Screens/home.dart';
 import 'package:restureant_app/onboarding_pages/initial_page.dart';
 
 void main() {
@@ -13,7 +14,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(primarySwatch: Colors.blue),
-      home: HomePage(),
+      home: ChefDashboard(),
     );
   }
 }
