@@ -282,7 +282,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           child: ElevatedButton(
                             onPressed: _handleContactAdmin,
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFFFFEA00),
+                              backgroundColor: const Color(0xFFFFD700),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(30),
                               ),
