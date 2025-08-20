@@ -24,7 +24,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
           });
 
           if (page == 1) {
-            Future.delayed(const Duration(milliseconds: 300), () {
+            Future.delayed(const Duration(milliseconds: 100), () {
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
