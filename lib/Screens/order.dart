@@ -13,6 +13,8 @@ class _OrdersState extends State<Orders> {
   // It has been moved inside this class to resolve the error.
   Widget _buildSpecialItem(String imagePath, {double? width, double? height}) {
     return Container(
+      // Use BoxConstraints to ensure the image is responsive
+      // It will not be smaller than 40x40 and has a flexible max width/height
       constraints: BoxConstraints(
         maxWidth: width ?? double.infinity,
         maxHeight: height ?? double.infinity,
@@ -39,10 +41,13 @@ class _OrdersState extends State<Orders> {
   // It has also been moved inside this class.
   Widget _buildCategoryCard(String title, String imageUrl) {
     return LayoutBuilder(
+      // LayoutBuilder allows the widget to adapt to the constraints of its parent
       builder: (context, constraints) {
+        // Calculate the card height as a ratio of its parent's width,
+        // then clamp it to ensure it stays within a reasonable range
         final double cardHeight = constraints.maxWidth * 1.2;
-        final double minHeight = 100;
-        final double maxHeight = 180;
+        const double minHeight = 100;
+        const double maxHeight = 180;
         final double finalHeight = cardHeight.clamp(minHeight, maxHeight);
 
         return Container(
@@ -55,17 +60,18 @@ class _OrdersState extends State<Orders> {
                 color: Colors.grey.withOpacity(0.1),
                 spreadRadius: 1,
                 blurRadius: 5,
-                offset: Offset(0, 2),
+                offset: const Offset(0, 2),
               ),
             ],
           ),
           child: Column(
             children: [
+              // Use Expanded with a flex value to make the image flexible
               Expanded(
                 flex: 7,
                 child: Container(
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.only(
+                    borderRadius: const BorderRadius.only(
                       topLeft: Radius.circular(10),
                       topRight: Radius.circular(10),
                     ),
@@ -77,6 +83,7 @@ class _OrdersState extends State<Orders> {
                   ),
                 ),
               ),
+              // Use Expanded for the text as well, with a different flex value
               Expanded(
                 flex: 3,
                 child: Container(
@@ -86,10 +93,12 @@ class _OrdersState extends State<Orders> {
                   ),
                   child: Center(
                     child: FittedBox(
+                      // FittedBox ensures the text scales down to fit the space
                       fit: BoxFit.scaleDown,
                       child: Text(
                         title,
                         style: TextStyle(
+                          // Clamp the font size to keep it within a readable range
                           fontSize: (constraints.maxWidth * 0.12).clamp(
                             10.0,
                             16.0,
@@ -114,13 +123,15 @@ class _OrdersState extends State<Orders> {
 
   @override
   Widget build(BuildContext context) {
+    // Get screen size using MediaQuery
     final Size size = MediaQuery.of(context).size;
     final double screenWidth = size.width;
     final double screenHeight = size.height;
+    // Determine if the device is a tablet based on width
     final bool isTablet = screenWidth > 600;
     final bool isLandscape = screenWidth > screenHeight;
 
-    // Responsive padding
+    // Responsive padding calculated as a percentage of screen size
     final double horizontalPadding = isTablet
         ? screenWidth * 0.06
         : screenWidth * 0.04;
@@ -128,7 +139,7 @@ class _OrdersState extends State<Orders> {
         ? screenHeight * 0.02
         : screenHeight * 0.015;
 
-    // Dynamic header height based on screen size
+    // Dynamic header height based on screen size, with clamping
     final double headerHeight = isTablet
         ? (screenHeight * 0.35).clamp(280.0, 350.0)
         : (screenHeight * 0.32).clamp(240.0, 300.0);
@@ -136,7 +147,7 @@ class _OrdersState extends State<Orders> {
     return Scaffold(
       backgroundColor: Colors.grey[50],
       body: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           image: DecorationImage(
             image: AssetImage('assets/Images/bgImg.png'),
             fit: BoxFit.cover,
@@ -144,7 +155,7 @@ class _OrdersState extends State<Orders> {
         ),
         child: SafeArea(
           child: SingleChildScrollView(
-            physics: ClampingScrollPhysics(),
+            physics: const ClampingScrollPhysics(),
             child: Column(
               children: [
                 // Header Section - Fixed height and layout
@@ -152,7 +163,7 @@ class _OrdersState extends State<Orders> {
                   width: double.infinity,
                   height: headerHeight,
                   padding: EdgeInsets.all(horizontalPadding),
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     color: Color(0xFFFFC107),
                     borderRadius: BorderRadius.only(
                       bottomLeft: Radius.circular(20),
@@ -170,6 +181,7 @@ class _OrdersState extends State<Orders> {
                             Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
+                                // Image size is based on tablet status
                                 Container(
                                   constraints: BoxConstraints(
                                     minWidth: 24,
@@ -184,7 +196,8 @@ class _OrdersState extends State<Orders> {
                                     fit: BoxFit.contain,
                                   ),
                                 ),
-                                SizedBox(height: 4),
+                                const SizedBox(height: 4),
+                                // Font size adapts to tablet status
                                 Text(
                                   'Hotbox Kitchen',
                                   style: GoogleFonts.belgrano(
@@ -206,12 +219,14 @@ class _OrdersState extends State<Orders> {
                         child: Container(
                           child: Row(
                             children: [
+                              // Use Expanded with a flex of 2
                               Expanded(
                                 flex: 2,
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
+                                    // Font sizes adapt to tablet status
                                     Text(
                                       'Good Morning',
                                       style: TextStyle(
@@ -231,12 +246,15 @@ class _OrdersState extends State<Orders> {
                                   ],
                                 ),
                               ),
+                              // Use Expanded with a flex of 3
                               Expanded(
                                 flex: 3,
                                 child: Container(
-                                  margin: EdgeInsets.only(left: 10),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
+                                  margin: const EdgeInsets.only(left: 10),
+                                  decoration: const BoxDecoration(
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(10),
+                                    ),
                                     image: DecorationImage(
                                       image: AssetImage(
                                         'assets/Images/header.png',
@@ -270,19 +288,20 @@ class _OrdersState extends State<Orders> {
                         child: Row(
                           children: [
                             SizedBox(width: horizontalPadding),
+                            // Icon size adapts to tablet status
                             Icon(
                               Icons.search,
                               color: Colors.grey[600],
                               size: isTablet ? 28 : 22,
                             ),
                             SizedBox(width: screenWidth * 0.03),
-                            Expanded(
+                            const Expanded(
                               child: TextField(
                                 decoration: InputDecoration(
                                   hintText: 'Search',
                                   hintStyle: TextStyle(
-                                    fontSize: isTablet ? 18 : 16,
-                                    color: Colors.grey[600],
+                                    fontSize: 18,
+                                    color: Color.fromRGBO(158, 158, 158, 1),
                                     fontWeight: FontWeight.w400,
                                   ),
                                   border: InputBorder.none,
@@ -299,12 +318,12 @@ class _OrdersState extends State<Orders> {
                                 color: Colors.grey[700],
                                 size: isTablet ? 26 : 20,
                               ),
-                              padding: EdgeInsets.all(8),
+                              padding: const EdgeInsets.all(8),
                             ),
                             Container(
                               width: isTablet ? 45 : 36,
                               height: isTablet ? 45 : 36,
-                              margin: EdgeInsets.only(right: 8),
+                              margin: const EdgeInsets.only(right: 8),
                               decoration: BoxDecoration(
                                 color: const Color(0xFFFFE600),
                                 borderRadius: BorderRadius.circular(18),
@@ -373,6 +392,8 @@ class _OrdersState extends State<Orders> {
                             // Special items
                             LayoutBuilder(
                               builder: (context, constraints) {
+                                // The item size is calculated based on the parent width,
+                                // with a clamp to keep it from getting too big or small
                                 final double itemSize =
                                     (constraints.maxWidth / 3.8).clamp(
                                       60.0,
@@ -427,9 +448,12 @@ class _OrdersState extends State<Orders> {
                           return GridView.count(
                             shrinkWrap: true,
                             physics: const NeverScrollableScrollPhysics(),
+                            // The number of columns is fixed at 3
                             crossAxisCount: 3,
+                            // Spacing is based on tablet status
                             crossAxisSpacing: spacing,
                             mainAxisSpacing: spacing,
+                            // The child aspect ratio maintains a consistent shape
                             childAspectRatio: 0.79,
                             children: [
                               _buildCategoryCard(
@@ -501,6 +525,7 @@ class BottomNavigation extends StatelessWidget {
   ) {
     final Size size = MediaQuery.of(context).size;
     final bool isTablet = size.width > 600;
+    // Icon size is based on tablet status
     final double iconSize = isTablet ? 28 : 22;
 
     return GestureDetector(
@@ -532,6 +557,7 @@ class BottomNavigation extends StatelessWidget {
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
     final bool isTablet = size.width > 600;
+    // Navigation bar height and margin are based on tablet status
     final double navHeight = isTablet ? 70 : 59;
     final double margin = isTablet ? 30 : 20;
 
