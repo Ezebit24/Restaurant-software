@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Hotbox Kitchen',
       theme: ThemeData(primarySwatch: Colors.blue),
-      home: HotboxKitchenScreen(),
+      home: Orders(),
     );
   }
 }

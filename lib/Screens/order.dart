@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:restureant_app/Screens/home.dart';
 
 // This is the main class for the Orders screen.
 class Orders extends StatefulWidget {
@@ -11,70 +12,126 @@ class _OrdersState extends State<Orders> {
   // Helper method to build the special item widgets.
   // It has been moved inside this class to resolve the error.
   Widget _buildSpecialItem(String imagePath, {double? width, double? height}) {
-    return Image.asset(
-      imagePath,
-      width: width,
-      height: height,
-      fit: BoxFit.contain,
-      semanticLabel: 'Special dish image',
+    return Container(
+      constraints: BoxConstraints(
+        maxWidth: width ?? double.infinity,
+        maxHeight: height ?? double.infinity,
+        minWidth: 40,
+        minHeight: 40,
+      ),
+      child: Image.asset(
+        imagePath,
+        width: width,
+        height: height,
+        fit: BoxFit.contain,
+        semanticLabel: 'Special dish image',
+        errorBuilder: (context, error, stackTrace) => Container(
+          width: width,
+          height: height,
+          color: Colors.grey[300],
+          child: Icon(Icons.image_not_supported, size: (width ?? 60) * 0.5),
+        ),
+      ),
     );
   }
 
   // Helper method to build the category cards.
   // It has also been moved inside this class.
   Widget _buildCategoryCard(String title, String imageUrl) {
-    final Size size = MediaQuery.of(context).size;
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final double cardHeight = constraints.maxWidth * 1.2;
+        final double minHeight = 100;
+        final double maxHeight = 180;
+        final double finalHeight = cardHeight.clamp(minHeight, maxHeight);
 
-    return Container(
-      height: size.height * 0.15, // Responsive height
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            spreadRadius: 1,
-            blurRadius: 5,
-            offset: Offset(0, 2),
+        return Container(
+          height: finalHeight,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(10),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.1),
+                spreadRadius: 1,
+                blurRadius: 5,
+                offset: Offset(0, 2),
+              ),
+            ],
           ),
-        ],
-      ),
-      child: Column(
-        children: [
-          Expanded(
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(10),
-                  topRight: Radius.circular(10),
-                ),
-                image: DecorationImage(
-                  image: AssetImage(imageUrl),
-                  fit: BoxFit.cover,
+          child: Column(
+            children: [
+              Expanded(
+                flex: 7,
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(10),
+                      topRight: Radius.circular(10),
+                    ),
+                    image: DecorationImage(
+                      image: AssetImage(imageUrl),
+                      fit: BoxFit.cover,
+                      onError: (error, stackTrace) {},
+                    ),
+                  ),
                 ),
               ),
-            ),
-          ),
-          Container(
-            padding: EdgeInsets.symmetric(vertical: size.height * 0.01),
-            child: Text(
-              title,
-              style: TextStyle(
-                fontSize: size.width * 0.028, // Responsive font size
-                fontWeight: FontWeight.w600,
-                color: Colors.black87,
+              Expanded(
+                flex: 3,
+                child: Container(
+                  padding: EdgeInsets.symmetric(
+                    vertical: finalHeight * 0.05,
+                    horizontal: 4,
+                  ),
+                  child: Center(
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        title,
+                        style: TextStyle(
+                          fontSize: (constraints.maxWidth * 0.12).clamp(
+                            10.0,
+                            16.0,
+                          ),
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black87,
+                        ),
+                        textAlign: TextAlign.center,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ),
+                ),
               ),
-              textAlign: TextAlign.center,
-            ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
+    final double screenWidth = size.width;
+    final double screenHeight = size.height;
+    final bool isTablet = screenWidth > 600;
+    final bool isLandscape = screenWidth > screenHeight;
+
+    // Responsive padding
+    final double horizontalPadding = isTablet
+        ? screenWidth * 0.06
+        : screenWidth * 0.04;
+    final double verticalPadding = isTablet
+        ? screenHeight * 0.02
+        : screenHeight * 0.015;
+
+    // Dynamic header height based on screen size
+    final double headerHeight = isTablet
+        ? (screenHeight * 0.35).clamp(280.0, 350.0)
+        : (screenHeight * 0.32).clamp(240.0, 300.0);
 
     return Scaffold(
       backgroundColor: Colors.grey[50],
@@ -87,16 +144,14 @@ class _OrdersState extends State<Orders> {
         ),
         child: SafeArea(
           child: SingleChildScrollView(
+            physics: ClampingScrollPhysics(),
             child: Column(
               children: [
-                // Header Section - Responsive layout
+                // Header Section - Fixed height and layout
                 Container(
                   width: double.infinity,
-                  constraints: BoxConstraints(
-                    minHeight: 260,
-                    maxHeight: size.height * 0.45,
-                  ),
-                  padding: EdgeInsets.all(size.width * 0.04),
+                  height: headerHeight,
+                  padding: EdgeInsets.all(horizontalPadding),
                   decoration: BoxDecoration(
                     color: Color(0xFFFFC107),
                     borderRadius: BorderRadius.only(
@@ -106,101 +161,101 @@ class _OrdersState extends State<Orders> {
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      // App Bar
-                      Row(
-                        children: [
-                          Column(
-                            children: [
-                              Image.asset(
-                                'assets/images/hat.png',
-                                width: size.width * 0.08,
-                                height: size.width * 0.08,
-                                fit: BoxFit.contain,
-                              ),
-                              SizedBox(height: size.height * 0.008),
-                              Text(
-                                'Hotbox Kitchen',
-                                style: GoogleFonts.belgrano(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: size.width * 0.03,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: size.height * 0.015),
-
-                      // Welcome Message with responsive header.png layout
+                      // App Bar - Fixed spacing
                       Container(
-                        height: size.height * 0.18,
+                        height: isTablet ? 60 : 50,
                         child: Row(
                           children: [
-                            Expanded(
-                              flex: 3,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  FittedBox(
-                                    fit: BoxFit.scaleDown,
-                                    alignment: Alignment.centerLeft,
-                                    child: Text(
-                                      'Good Morning',
-                                      style: TextStyle(
-                                        fontSize: size.width * 0.065,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.black87,
-                                      ),
-                                    ),
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Container(
+                                  constraints: BoxConstraints(
+                                    minWidth: 24,
+                                    minHeight: 24,
+                                    maxWidth: isTablet ? 40 : 30,
+                                    maxHeight: isTablet ? 40 : 30,
                                   ),
-                                  FittedBox(
-                                    fit: BoxFit.scaleDown,
-                                    alignment: Alignment.centerLeft,
-                                    child: Text(
-                                      'Anu',
-                                      style: TextStyle(
-                                        fontSize: size.width * 0.065,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.black87,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Expanded(
-                              flex: 2,
-                              child: Container(
-                                margin: EdgeInsets.only(
-                                  left: size.width * 0.02,
-                                ),
-                                constraints: BoxConstraints(
-                                  maxWidth: size.width * 0.45,
-                                  maxHeight: size.height * 0.16,
-                                ),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  image: DecorationImage(
-                                    image: AssetImage(
-                                      'assets/Images/header.png',
-                                    ),
+                                  child: Image.asset(
+                                    'assets/images/hat.png',
+                                    width: isTablet ? 35 : 25,
+                                    height: isTablet ? 35 : 25,
                                     fit: BoxFit.contain,
                                   ),
                                 ),
-                              ),
+                                SizedBox(height: 4),
+                                Text(
+                                  'Hotbox Kitchen',
+                                  style: GoogleFonts.belgrano(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: isTablet ? 16 : 12,
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ),
                       ),
-                      SizedBox(height: size.height * 0.015),
 
-                      // New Search Bar with Notification
+                      SizedBox(height: verticalPadding * 0.5),
+
+                      // Welcome Message with header image - Fixed flex ratios
+                      Expanded(
+                        child: Container(
+                          child: Row(
+                            children: [
+                              Expanded(
+                                flex: 2,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      'Good Morning',
+                                      style: TextStyle(
+                                        fontSize: isTablet ? 32 : 24,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black87,
+                                      ),
+                                    ),
+                                    Text(
+                                      'Anu',
+                                      style: TextStyle(
+                                        fontSize: isTablet ? 32 : 24,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black87,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Expanded(
+                                flex: 3,
+                                child: Container(
+                                  margin: EdgeInsets.only(left: 10),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    image: DecorationImage(
+                                      image: AssetImage(
+                                        'assets/Images/header.png',
+                                      ),
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+
+                      SizedBox(height: verticalPadding),
+
+                      // Search Bar - Fixed height
                       Container(
-                        height: size.height * 0.06,
+                        height: isTablet ? 60 : 50,
                         decoration: BoxDecoration(
                           color: Colors.white.withOpacity(0.9),
                           borderRadius: BorderRadius.circular(25),
@@ -214,25 +269,25 @@ class _OrdersState extends State<Orders> {
                         ),
                         child: Row(
                           children: [
-                            SizedBox(width: size.width * 0.04),
+                            SizedBox(width: horizontalPadding),
                             Icon(
                               Icons.search,
                               color: Colors.grey[600],
-                              size: size.width * 0.05,
+                              size: isTablet ? 28 : 22,
                             ),
-                            SizedBox(width: size.width * 0.03),
+                            SizedBox(width: screenWidth * 0.03),
                             Expanded(
                               child: TextField(
                                 decoration: InputDecoration(
                                   hintText: 'Search',
                                   hintStyle: TextStyle(
-                                    fontSize: size.width * 0.035,
+                                    fontSize: isTablet ? 18 : 16,
                                     color: Colors.grey[600],
                                     fontWeight: FontWeight.w400,
                                   ),
                                   border: InputBorder.none,
                                   contentPadding: EdgeInsets.symmetric(
-                                    vertical: size.height * 0.01,
+                                    vertical: 0,
                                   ),
                                 ),
                               ),
@@ -242,18 +297,14 @@ class _OrdersState extends State<Orders> {
                               icon: Icon(
                                 Icons.mic,
                                 color: Colors.grey[700],
-                                size: size.width * 0.05,
+                                size: isTablet ? 26 : 20,
                               ),
-                              padding: EdgeInsets.all(size.width * 0.02),
-                              constraints: BoxConstraints(
-                                minWidth: size.width * 0.08,
-                                minHeight: size.width * 0.08,
-                              ),
+                              padding: EdgeInsets.all(8),
                             ),
                             Container(
-                              width: size.width * 0.08,
-                              height: size.width * 0.08,
-                              margin: EdgeInsets.only(right: size.width * 0.02),
+                              width: isTablet ? 45 : 36,
+                              height: isTablet ? 45 : 36,
+                              margin: EdgeInsets.only(right: 8),
                               decoration: BoxDecoration(
                                 color: const Color(0xFFFFE600),
                                 borderRadius: BorderRadius.circular(18),
@@ -263,7 +314,7 @@ class _OrdersState extends State<Orders> {
                                 icon: Icon(
                                   Icons.notifications,
                                   color: Colors.black87,
-                                  size: size.width * 0.04,
+                                  size: isTablet ? 22 : 18,
                                 ),
                                 padding: EdgeInsets.zero,
                               ),
@@ -277,18 +328,18 @@ class _OrdersState extends State<Orders> {
 
                 // Content Section
                 Padding(
-                  padding: EdgeInsets.all(size.width * 0.05),
+                  padding: EdgeInsets.all(horizontalPadding),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      SizedBox(height: verticalPadding),
+
                       // Menu Button
                       Container(
                         width: double.infinity,
-                        padding: EdgeInsets.symmetric(
-                          vertical: size.height * 0.02,
-                        ),
+                        height: isTablet ? 42 : 34,
                         decoration: BoxDecoration(
-                          color: Color(0xFF8D6E63),
+                          color: const Color(0xFFB8860B),
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Center(
@@ -296,19 +347,21 @@ class _OrdersState extends State<Orders> {
                             'Menu',
                             style: TextStyle(
                               color: Colors.white,
-                              fontSize: size.width * 0.045,
+                              fontSize: isTablet ? 20 : 18,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
                         ),
                       ),
-                      SizedBox(height: size.height * 0.025),
+
+                      SizedBox(height: verticalPadding * 1.5),
 
                       // Today's Specials
                       Container(
+                        width: double.infinity,
                         padding: EdgeInsets.symmetric(
-                          vertical: size.height * 0.03,
-                          horizontal: size.width * 0.08,
+                          vertical: isTablet ? 30 : 24,
+                          horizontal: isTablet ? 32 : 24,
                         ),
                         decoration: BoxDecoration(
                           color: const Color(0xFFFFC107),
@@ -317,39 +370,45 @@ class _OrdersState extends State<Orders> {
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            // Special items with responsive sizing
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Flexible(
-                                  child: _buildSpecialItem(
-                                    'assets/Images/spec1.png',
-                                    width: size.width * 0.2,
-                                    height: size.width * 0.2,
-                                  ),
-                                ),
-                                Flexible(
-                                  child: _buildSpecialItem(
-                                    'assets/Images/spec2.png',
-                                    width: size.width * 0.25,
-                                    height: size.width * 0.2,
-                                  ),
-                                ),
-                                Flexible(
-                                  child: _buildSpecialItem(
-                                    'assets/Images/spec3.png',
-                                    width: size.width * 0.2,
-                                    height: size.width * 0.2,
-                                  ),
-                                ),
-                              ],
+                            // Special items
+                            LayoutBuilder(
+                              builder: (context, constraints) {
+                                final double itemSize =
+                                    (constraints.maxWidth / 3.8).clamp(
+                                      60.0,
+                                      100.0,
+                                    );
+                                return Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    _buildSpecialItem(
+                                      'assets/Images/spec1.png',
+                                      width: itemSize,
+                                      height: itemSize,
+                                    ),
+                                    _buildSpecialItem(
+                                      'assets/Images/spec2.png',
+                                      width: itemSize * 1.1,
+                                      height: itemSize,
+                                    ),
+                                    _buildSpecialItem(
+                                      'assets/Images/spec3.png',
+                                      width: itemSize,
+                                      height: itemSize,
+                                    ),
+                                  ],
+                                );
+                              },
                             ),
-                            SizedBox(height: size.height * 0.02),
+
+                            SizedBox(height: isTablet ? 20 : 16),
+
                             Text(
                               "Today's Specials / Chef's Specials",
                               style: TextStyle(
-                                fontSize: size.width * 0.045,
+                                fontSize: isTablet ? 22 : 18,
                                 fontWeight: FontWeight.w800,
                                 color: Colors.black,
                               ),
@@ -358,60 +417,64 @@ class _OrdersState extends State<Orders> {
                           ],
                         ),
                       ),
-                      SizedBox(height: size.height * 0.025),
+
+                      SizedBox(height: verticalPadding * 1.5),
 
                       // Category Grid
-                      Row(
-                        children: [
-                          Expanded(
-                            child: _buildCategoryCard(
-                              'Starters',
-                              'assets/Images/starters.jpg',
-                            ),
-                          ),
-                          SizedBox(width: size.width * 0.04),
-                          Expanded(
-                            child: _buildCategoryCard(
-                              'Main Course',
-                              'assets/Images/main_course.jpg',
-                            ),
-                          ),
-                          SizedBox(width: size.width * 0.04),
-                          Expanded(
-                            child: _buildCategoryCard(
-                              'Breads',
-                              'assets/Images/breads.jpg',
-                            ),
-                          ),
-                        ],
+                      LayoutBuilder(
+                        builder: (context, constraints) {
+                          final double spacing = isTablet ? 16 : 12;
+                          return GridView.count(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            crossAxisCount: 3,
+                            crossAxisSpacing: spacing,
+                            mainAxisSpacing: spacing,
+                            childAspectRatio: 0.79,
+                            children: [
+                              _buildCategoryCard(
+                                'Starters',
+                                'assets/Images/food.png',
+                              ),
+                              _buildCategoryCard(
+                                'Main Course',
+                                'assets/Images/OrdersPage/mainCourse.png',
+                              ),
+                              _buildCategoryCard(
+                                'Breads',
+                                'assets/Images/OrdersPage/breads.png',
+                              ),
+                              _buildCategoryCard(
+                                'Noodles &\nPasta',
+                                'assets/Images/OrdersPage/noodles.png',
+                              ),
+                              _buildCategoryCard(
+                                'Sides &\nSnacks',
+                                'assets/Images/OrdersPage/sides.png',
+                              ),
+                              _buildCategoryCard(
+                                'Beverages',
+                                'assets/Images/OrdersPage/bev.png',
+                              ),
+                              _buildCategoryCard(
+                                'Meals',
+                                'assets/Images/OrdersPage/meal.png',
+                              ),
+                              _buildCategoryCard(
+                                'Desserts',
+                                'assets/Images/OrdersPage/dessert.png',
+                              ),
+                              _buildCategoryCard(
+                                'Diet',
+                                'assets/Images/OrdersPage/diet.png',
+                              ),
+                            ],
+                          );
+                        },
                       ),
-                      SizedBox(height: size.height * 0.02),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: _buildCategoryCard(
-                              'Noodles &\nPasta',
-                              'assets/Images/noodles.jpg',
-                            ),
-                          ),
-                          SizedBox(width: size.width * 0.04),
-                          Expanded(
-                            child: _buildCategoryCard(
-                              'Sides &\nSnacks',
-                              'assets/Images/snacks.jpg',
-                            ),
-                          ),
-                          SizedBox(width: size.width * 0.04),
-                          Expanded(
-                            child: _buildCategoryCard(
-                              'Beverages',
-                              'assets/Images/beverages.jpg',
-                            ),
-                          ),
-                        ],
-                      ),
-                      // Add bottom padding to avoid overlap with floating action button
-                      SizedBox(height: size.height * 0.12),
+
+                      // Bottom padding for floating action button
+                      SizedBox(height: isTablet ? 100 : 90),
                     ],
                   ),
                 ),
@@ -426,49 +489,55 @@ class _OrdersState extends State<Orders> {
   }
 }
 
-// This class is a separate widget and did not have any errors.
+// Bottom Navigation
 class BottomNavigation extends StatelessWidget {
   const BottomNavigation({super.key});
 
-  Widget _buildNavItem(String imageUrl, String label, bool isActive) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      decoration: BoxDecoration(
-        color: isActive ? Colors.white.withOpacity(0.1) : Colors.transparent,
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          SizedBox(
-            width: 22,
-            height: 22,
-            child: Image.asset(
-              imageUrl,
-              color: Colors.white,
-              errorBuilder: (context, error, stackTrace) =>
-                  const Icon(Icons.error, color: Colors.white, size: 22),
-            ),
+  Widget _buildNavItem(
+    String imageUrl,
+    bool isActive,
+    VoidCallback? onTap,
+    BuildContext context,
+  ) {
+    final Size size = MediaQuery.of(context).size;
+    final bool isTablet = size.width > 600;
+    final double iconSize = isTablet ? 28 : 22;
+
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: EdgeInsets.symmetric(
+          horizontal: isTablet ? 20 : 16,
+          vertical: isTablet ? 12 : 8,
+        ),
+        decoration: BoxDecoration(
+          color: isActive ? Colors.white.withOpacity(0.1) : Colors.transparent,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: SizedBox(
+          width: iconSize,
+          height: iconSize,
+          child: Image.asset(
+            imageUrl,
+            color: Colors.white,
+            errorBuilder: (context, error, stackTrace) =>
+                Icon(Icons.error, color: Colors.white, size: iconSize),
           ),
-          const SizedBox(height: 4),
-          Text(
-            label,
-            style: GoogleFonts.inter(
-              color: Colors.white,
-              fontSize: 10,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final Size size = MediaQuery.of(context).size;
+    final bool isTablet = size.width > 600;
+    final double navHeight = isTablet ? 70 : 59;
+    final double margin = isTablet ? 30 : 20;
+
     return Container(
-      margin: const EdgeInsets.all(20),
-      height: 59,
+      margin: EdgeInsets.all(margin),
+      height: navHeight,
       decoration: BoxDecoration(
         color: Colors.black87,
         borderRadius: BorderRadius.circular(35),
@@ -483,10 +552,15 @@ class BottomNavigation extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          _buildNavItem('assets/images/home_icon.png', 'Home', false),
-          _buildNavItem('assets/images/kitchen.png', 'Orders', true),
-          _buildNavItem('assets/images/chef-hat.png', 'Chef', false),
-          _buildNavItem('assets/images/user.png', 'Profile', false),
+          _buildNavItem('assets/images/home_icon.png', false, () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const HomePage()),
+            );
+          }, context),
+          _buildNavItem('assets/images/kitchen.png', true, null, context),
+          _buildNavItem('assets/images/chef-hat.png', false, null, context),
+          _buildNavItem('assets/images/user.png', false, null, context),
         ],
       ),
     );

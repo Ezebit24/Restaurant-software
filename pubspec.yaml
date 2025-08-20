@@ -58,6 +58,7 @@ flutter:
   # This section tells Flutter to include the assets directory
   assets:
     - assets/images/
+    - assets/images/OrdersPage/
     - assets/font/
 
   # This is the correct way to add and name your font family

@@ -1,9 +1,75 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:restureant_app/Screens/order.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  // Add a state variable to track the selected index for the bottom navigation bar.
+  // Index 1 corresponds to the 'Orders' icon.
+  int _selectedIndex = 0;
+
+  // This method is called when a navigation bar item is tapped.
+  void _onItemTapped(int index) {
+    if (index == 1) {
+      // If the 'Orders' icon (index 1) is tapped, navigate to the Orders page.
+      setState(() {
+        _selectedIndex = index;
+      });
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => Orders()),
+      );
+    } else {
+      // For other icons, just update the selected index.
+      setState(() {
+        _selectedIndex = index;
+      });
+    }
+  }
+
+  // Updated buildNavItem function with responsiveness from the provided UI
+  Widget _buildNavItem(
+    String imageUrl,
+    bool isActive,
+    VoidCallback? onTap,
+    BuildContext context,
+  ) {
+    final Size size = MediaQuery.of(context).size;
+    final bool isTablet = size.width > 600;
+    final double iconSize = isTablet ? 28 : 22;
+
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: EdgeInsets.symmetric(
+          horizontal: isTablet ? 20 : 16,
+          vertical: isTablet ? 12 : 8,
+        ),
+        decoration: BoxDecoration(
+          color: isActive ? Colors.white.withOpacity(0.1) : Colors.transparent,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: SizedBox(
+          width: iconSize,
+          height: iconSize,
+          child: Image.asset(
+            imageUrl,
+            color: Colors.white,
+            errorBuilder: (context, error, stackTrace) =>
+                Icon(Icons.error, color: Colors.white, size: iconSize),
+          ),
+        ),
+      ),
+    );
+  }
+
+  // buildCard method remains unchanged as per your request
   Widget buildCard({
     required String imageUrl,
     required String title,
@@ -14,9 +80,8 @@ class HomePage extends StatelessWidget {
       builder: (context, constraints) {
         // Calculate proportional sizes to prevent overflow
         double cardPadding = constraints.maxWidth * 0.08;
-        double availableHeight = constraints.maxHeight - (cardPadding * 2);
         double imageSize = constraints.maxWidth * 0.32;
-        double buttonHeight = 36; // Fixed button height as in original
+        const double buttonHeight = 36; // Fixed button height as in original
 
         return Container(
           decoration: BoxDecoration(
@@ -120,6 +185,27 @@ class HomePage extends StatelessWidget {
     );
   }
 
+  Future<bool> _onWillPop() async {
+    return (await showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('Exit App'),
+            content: const Text('Are you sure you want to close the app?'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: const Text('No'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                child: const Text('Yes'),
+              ),
+            ],
+          ),
+        )) ??
+        false;
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -127,297 +213,276 @@ class HomePage extends StatelessWidget {
     // Changed headerHeight to a fixed value of 260
     const double headerHeight = 260;
 
-    return Scaffold(
-      backgroundColor: const Color(0xFFECECEC),
-      body: SafeArea(
-        child: Column(
-          children: [
-            // Header Section
-            Container(
-              width: double.infinity,
-              height: headerHeight,
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(30),
-                  bottomRight: Radius.circular(30),
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: Scaffold(
+        backgroundColor: const Color(0xFFECECEC),
+        body: SafeArea(
+          child: Column(
+            children: [
+              // Header Section
+              Container(
+                width: double.infinity,
+                height: headerHeight,
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(30),
+                    bottomRight: Radius.circular(30),
+                  ),
+                  image: DecorationImage(
+                    image: AssetImage("assets/images/homeImg.png"),
+                    fit: BoxFit.cover,
+                  ),
                 ),
-                image: DecorationImage(
-                  image: AssetImage("assets/images/homeImg.png"),
-                  fit: BoxFit.cover,
-                ),
-              ),
-              child: Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: size.width * 0.05,
-                  vertical: size.height * 0.02,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Top Bar with Chef Hat Image and Logo
-                    Row(
-                      children: [
-                        Column(
-                          children: [
-                            Image.asset(
-                              'assets/images/hat.png',
-                              width: size.width * 0.08,
-                              height: size.width * 0.08,
-                              fit: BoxFit.contain,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: size.width * 0.05,
+                    vertical: size.height * 0.02,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Top Bar with Chef Hat Image and Logo
+                      Row(
+                        children: [
+                          Column(
+                            children: [
+                              Image.asset(
+                                'assets/images/hat.png',
+                                width: size.width * 0.08,
+                                height: size.width * 0.08,
+                                fit: BoxFit.contain,
+                              ),
+                              SizedBox(height: size.height * 0.008),
+                              Text(
+                                'Hotbox Kitchen',
+                                style: GoogleFonts.belgrano(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: size.width * 0.03,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+
+                      // Flexible spacer to push greeting to middle area
+                      Flexible(flex: 3, child: Container()),
+
+                      // Good Morning Text
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Good Morning',
+                            style: GoogleFonts.inter(
+                              fontWeight: FontWeight.w700,
+                              fontSize: size.width * 0.06,
+                              color: Colors.black,
                             ),
-                            SizedBox(height: size.height * 0.008),
-                            Text(
-                              'Hotbox Kitchen',
-                              style: GoogleFonts.belgrano(
-                                color: Colors.black,
-                                fontWeight: FontWeight.w600,
-                                fontSize: size.width * 0.03,
+                          ),
+                          Text(
+                            'Anu',
+                            style: GoogleFonts.inter(
+                              fontWeight: FontWeight.w700,
+                              fontSize: size.width * 0.06,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      // Flexible spacer before search bar
+                      Flexible(flex: 2, child: Container()),
+
+                      // Search Bar
+                      Container(
+                        height: size.height * 0.065,
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.9),
+                          borderRadius: BorderRadius.circular(27.5),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.1),
+                              blurRadius: 10,
+                              offset: const Offset(0, 5),
+                            ),
+                          ],
+                        ),
+                        child: Row(
+                          children: [
+                            SizedBox(width: size.width * 0.05),
+                            Icon(
+                              Icons.search,
+                              color: Colors.grey[600],
+                              size: size.width * 0.055,
+                            ),
+                            SizedBox(width: size.width * 0.04),
+                            Expanded(
+                              child: TextField(
+                                decoration: InputDecoration(
+                                  hintText: 'Search',
+                                  hintStyle: GoogleFonts.inter(
+                                    fontSize: size.width * 0.04,
+                                    color: Colors.grey[600],
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                  border: InputBorder.none,
+                                  contentPadding: EdgeInsets.symmetric(
+                                    vertical: size.height * 0.02,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            IconButton(
+                              onPressed: () {},
+                              icon: Icon(
+                                Icons.mic,
+                                color: Colors.grey[700],
+                                size: size.width * 0.055,
+                              ),
+                            ),
+                            Container(
+                              width: size.width * 0.1,
+                              height: size.width * 0.1,
+                              margin: EdgeInsets.only(right: size.width * 0.02),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFFFE600),
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: IconButton(
+                                onPressed: () {},
+                                icon: Icon(
+                                  Icons.notifications,
+                                  color: Colors.black87,
+                                  size: size.width * 0.05,
+                                ),
+                                padding: EdgeInsets.zero,
                               ),
                             ),
                           ],
                         ),
-                      ],
-                    ),
-
-                    // Flexible spacer to push greeting to middle area
-                    Flexible(flex: 3, child: Container()),
-
-                    // Good Morning Text
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Good Morning',
-                          style: GoogleFonts.inter(
-                            fontWeight: FontWeight.w700,
-                            fontSize: size.width * 0.06,
-                            color: Colors.black,
-                          ),
-                        ),
-                        Text(
-                          'Anu',
-                          style: GoogleFonts.inter(
-                            fontWeight: FontWeight.w700,
-                            fontSize: size.width * 0.06,
-                            color: Colors.black,
-                          ),
-                        ),
-                      ],
-                    ),
-
-                    // Flexible spacer before search bar
-                    Flexible(flex: 2, child: Container()),
-
-                    // Search Bar
-                    Container(
-                      height: size.height * 0.065,
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.9),
-                        borderRadius: BorderRadius.circular(27.5),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.1),
-                            blurRadius: 10,
-                            offset: const Offset(0, 5),
-                          ),
-                        ],
                       ),
-                      child: Row(
-                        children: [
-                          SizedBox(width: size.width * 0.05),
-                          Icon(
-                            Icons.search,
-                            color: Colors.grey[600],
-                            size: size.width * 0.055,
-                          ),
-                          SizedBox(width: size.width * 0.04),
-                          Expanded(
-                            child: TextField(
-                              decoration: InputDecoration(
-                                hintText: 'Search',
-                                hintStyle: GoogleFonts.inter(
-                                  fontSize: size.width * 0.04,
-                                  color: Colors.grey[600],
-                                  fontWeight: FontWeight.w400,
-                                ),
-                                border: InputBorder.none,
-                                contentPadding: EdgeInsets.symmetric(
-                                  vertical: size.height * 0.02,
-                                ),
-                              ),
-                            ),
-                          ),
-                          IconButton(
-                            onPressed: () {},
-                            icon: Icon(
-                              Icons.mic,
-                              color: Colors.grey[700],
-                              size: size.width * 0.055,
-                            ),
-                          ),
-                          Container(
-                            width: size.width * 0.1,
-                            height: size.width * 0.1,
-                            margin: EdgeInsets.only(right: size.width * 0.02),
-                            decoration: BoxDecoration(
-                              color: const Color(0xFFFFE600),
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: IconButton(
-                              onPressed: () {},
-                              icon: Icon(
-                                Icons.notifications,
-                                color: Colors.black87,
-                                size: size.width * 0.05,
-                              ),
-                              padding: EdgeInsets.zero,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: size.height * 0.02),
-                  ],
+                      SizedBox(height: size.height * 0.02),
+                    ],
+                  ),
                 ),
               ),
-            ),
 
-            // Grid Section
-            Expanded(
-              child: Padding(
-                padding: EdgeInsets.all(size.width * 0.05),
-                child: LayoutBuilder(
-                  builder: (context, constraints) {
-                    int crossAxisCount = isTablet ? 3 : 2;
-                    double spacing = constraints.maxWidth * 0.04;
-                    // Increased childAspectRatio to give more height to cards
-                    double childAspectRatio = isTablet ? 0.9 : 0.85;
+              // Grid Section
+              Expanded(
+                child: Padding(
+                  padding: EdgeInsets.all(size.width * 0.05),
+                  child: LayoutBuilder(
+                    builder: (context, constraints) {
+                      int crossAxisCount = isTablet ? 3 : 2;
+                      double spacing = constraints.maxWidth * 0.04;
+                      // Increased childAspectRatio to give more height to cards
+                      double childAspectRatio = isTablet ? 0.9 : 0.85;
 
-                    return GridView.builder(
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: crossAxisCount,
-                        crossAxisSpacing: spacing,
-                        mainAxisSpacing: spacing,
-                        childAspectRatio: isTablet
-                            ? 0.85
-                            : 0.85, // Increased from 0.75 to 0.85 for better text display
-                      ),
-                      itemCount: 4,
-                      itemBuilder: (context, index) {
-                        final cards = [
-                          {
-                            'image': 'assets/images/active.png',
-                            'title': 'Active Order',
-                            'subtitle': 'Something short and simple here',
-                            'button': 'View',
-                          },
-                          {
-                            'image': 'assets/images/staff.png',
-                            'title': 'Staff on Duty',
-                            'subtitle': 'Something short and simple here',
-                            'button': 'View',
-                          },
-                          {
-                            'image': 'assets/images/status.png',
-                            'title': 'Table Status',
-                            'subtitle': 'Something short and simple here',
-                            'button': 'View',
-                          },
-                          {
-                            'image': 'assets/images/inventory.png',
-                            'title': 'Inventory Alert',
-                            'subtitle': 'Something short and simple here',
-                            'button': 'View',
-                          },
-                        ];
+                      return GridView.builder(
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: crossAxisCount,
+                          crossAxisSpacing: spacing,
+                          mainAxisSpacing: spacing,
+                          childAspectRatio: isTablet
+                              ? 0.85
+                              : 0.85, // Increased from 0.75 to 0.85 for better text display
+                        ),
+                        itemCount: 4,
+                        itemBuilder: (context, index) {
+                          final cards = [
+                            {
+                              'image': 'assets/images/active.png',
+                              'title': 'Active Order',
+                              'subtitle': 'Something short and simple here',
+                              'button': 'View',
+                            },
+                            {
+                              'image': 'assets/images/staff.png',
+                              'title': 'Staff on Duty',
+                              'subtitle': 'Something short and simple here',
+                              'button': 'View',
+                            },
+                            {
+                              'image': 'assets/images/status.png',
+                              'title': 'Table Status',
+                              'subtitle': 'Something short and simple here',
+                              'button': 'View',
+                            },
+                            {
+                              'image': 'assets/images/inventory.png',
+                              'title': 'Inventory Alert',
+                              'subtitle': 'Something short and simple here',
+                              'button': 'View',
+                            },
+                          ];
 
-                        final card = cards[index];
-                        return buildCard(
-                          imageUrl: card['image']!,
-                          title: card['title']!,
-                          subtitle: card['subtitle']!,
-                          buttonText: card['button']!,
-                        );
-                      },
-                    );
-                  },
+                          final card = cards[index];
+                          return buildCard(
+                            imageUrl: card['image']!,
+                            title: card['title']!,
+                            subtitle: card['subtitle']!,
+                            buttonText: card['button']!,
+                          );
+                        },
+                      );
+                    },
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
 
-      // Bottom Navigation
-      bottomNavigationBar: Container(
-        margin: EdgeInsets.all(size.width * 0.05),
-        height: size.height * 0.085,
-        decoration: BoxDecoration(
-          color: Colors.black87,
-          borderRadius: BorderRadius.circular(35),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.2),
-              blurRadius: 10,
-              offset: const Offset(0, 5),
-            ),
-          ],
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            _buildNavItem(size, 'assets/images/home_icon.png', 'Home', true),
-            _buildNavItem(size, 'assets/images/kitchen.png', 'Orders', false),
-            _buildNavItem(size, 'assets/images/chef-hat.png', 'Chef', false),
-            _buildNavItem(size, 'assets/images/user.png', 'Profile', false),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildNavItem(
-    Size size,
-    String imageUrl,
-    String label,
-    bool isActive,
-  ) {
-    return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: size.width * 0.04,
-        vertical: size.height * 0.01,
-      ),
-      decoration: BoxDecoration(
-        color: isActive ? Colors.white.withOpacity(0.1) : Colors.transparent,
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          SizedBox(
-            width: size.width * 0.055,
-            height: size.width * 0.055,
-            child: Image.asset(
-              imageUrl,
-              color: Colors.white,
-              errorBuilder: (context, error, stackTrace) => Icon(
-                Icons.error,
-                color: Colors.white,
-                size: size.width * 0.055,
+        // Bottom Navigation with improved responsiveness
+        bottomNavigationBar: Container(
+          margin: EdgeInsets.all(isTablet ? 30 : 20),
+          height: isTablet ? 70 : 59,
+          decoration: BoxDecoration(
+            color: Colors.black87,
+            borderRadius: BorderRadius.circular(35),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.2),
+                blurRadius: 10,
+                offset: const Offset(0, 5),
               ),
-            ),
+            ],
           ),
-          SizedBox(height: size.height * 0.005),
-          Text(
-            label,
-            style: GoogleFonts.inter(
-              color: Colors.white,
-              fontSize: size.width * 0.025,
-              fontWeight: FontWeight.w500,
-            ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              // Wrap each navigation item in a GestureDetector to make it tappable
+              _buildNavItem(
+                'assets/images/home_icon.png',
+                _selectedIndex == 0,
+                () => _onItemTapped(0),
+                context,
+              ),
+              _buildNavItem(
+                'assets/images/kitchen.png',
+                _selectedIndex == 1,
+                () => _onItemTapped(1),
+                context,
+              ),
+              _buildNavItem(
+                'assets/images/chef-hat.png',
+                _selectedIndex == 2,
+                () => _onItemTapped(2),
+                context,
+              ),
+              _buildNavItem(
+                'assets/images/user.png',
+                _selectedIndex == 3,
+                () => _onItemTapped(3),
+                context,
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
