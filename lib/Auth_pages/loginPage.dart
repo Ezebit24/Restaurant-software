@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 // Assuming forgotPWD.dart exists in the same directory or a similar path.
 // If not, you might need to adjust this import.
 import 'package:restureant_app/Auth_pages/forgotPWD.dart';
-import 'package:restureant_app/Screens/home.dart';
+import 'package:restureant_app/Screens/Chef/home.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -119,6 +119,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
                 // Login Form Container
                 Container(
+                  // *** CHANGE MADE HERE ***
+                  // Use MediaQuery to get 70% of the screen width for a responsive design.
+                  width: MediaQuery.of(context).size.width * 0.7,
                   padding: const EdgeInsets.all(24.0),
                   decoration: BoxDecoration(
                     color: const Color(0xFF2F3A3A),

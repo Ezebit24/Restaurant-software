@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:restureant_app/Screens/order.dart';
+import 'package:restureant_app/Screens/Chef/home/active.dart';
+import 'package:restureant_app/Screens/Chef/home/inventory.dart';
+import 'package:restureant_app/Screens/Chef/home/staff.dart';
+import 'package:restureant_app/Screens/Chef/home/table_stat.dart';
+import 'package:restureant_app/Screens/Chef/order.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -69,12 +73,13 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  // buildCard method remains unchanged as per your request
+  // Modified buildCard method to accept a VoidCallback
   Widget buildCard({
     required String imageUrl,
     required String title,
     required String subtitle,
     required String buttonText,
+    required VoidCallback onPressed, // New parameter for the button's action
   }) {
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -168,7 +173,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                   ),
-                  onPressed: () {},
+                  onPressed: onPressed, // Use the new onPressed callback here
                   child: Text(
                     buttonText,
                     style: GoogleFonts.inter(
@@ -387,9 +392,7 @@ class _HomePageState extends State<HomePage> {
                           crossAxisCount: crossAxisCount,
                           crossAxisSpacing: spacing,
                           mainAxisSpacing: spacing,
-                          childAspectRatio: isTablet
-                              ? 0.85
-                              : 0.85, // Increased from 0.75 to 0.85 for better text display
+                          childAspectRatio: isTablet ? 0.85 : 0.85,
                         ),
                         itemCount: 4,
                         itemBuilder: (context, index) {
@@ -399,33 +402,46 @@ class _HomePageState extends State<HomePage> {
                               'title': 'Active Order',
                               'subtitle': 'Something short and simple here',
                               'button': 'View',
+                              'page': const ActiveOrdersPage(),
                             },
                             {
                               'image': 'assets/images/staff.png',
                               'title': 'Staff on Duty',
                               'subtitle': 'Something short and simple here',
                               'button': 'View',
+                              'page': const StaffPage(),
                             },
                             {
                               'image': 'assets/images/status.png',
                               'title': 'Table Status',
                               'subtitle': 'Something short and simple here',
                               'button': 'View',
+                              'page': const TableStatus(),
                             },
                             {
                               'image': 'assets/images/inventory.png',
                               'title': 'Inventory Alert',
                               'subtitle': 'Something short and simple here',
                               'button': 'View',
+                              'page': const Inventory(),
                             },
                           ];
 
                           final card = cards[index];
                           return buildCard(
-                            imageUrl: card['image']!,
-                            title: card['title']!,
-                            subtitle: card['subtitle']!,
-                            buttonText: card['button']!,
+                            imageUrl: card['image'] as String,
+                            title: card['title'] as String,
+                            subtitle: card['subtitle'] as String,
+                            buttonText: card['button'] as String,
+                            onPressed: () {
+                              // Added navigation logic here
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => card['page'] as Widget,
+                                ),
+                              );
+                            },
                           );
                         },
                       );
@@ -455,31 +471,30 @@ class _HomePageState extends State<HomePage> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              // Wrap each navigation item in a GestureDetector to make it tappable
-              _buildNavItem(
-                'assets/images/home_icon.png',
-                _selectedIndex == 0,
-                () => _onItemTapped(0),
-                context,
-              ),
-              _buildNavItem(
-                'assets/images/kitchen.png',
-                _selectedIndex == 1,
-                () => _onItemTapped(1),
-                context,
-              ),
-              _buildNavItem(
-                'assets/images/chef-hat.png',
-                _selectedIndex == 2,
-                () => _onItemTapped(2),
-                context,
-              ),
-              _buildNavItem(
-                'assets/images/user.png',
-                _selectedIndex == 3,
-                () => _onItemTapped(3),
-                context,
-              ),
+              _buildNavItem('assets/images/home_icon.png', false, () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const HomePage()),
+                );
+              }, context),
+              _buildNavItem('assets/images/kitchen.png', false, () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => Orders()),
+                );
+              }, context),
+              _buildNavItem('assets/images/chef-hat.png', false, () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const HomePage()),
+                );
+              }, context),
+              _buildNavItem('assets/images/user.png', false, () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const HomePage()),
+                );
+              }, context),
             ],
           ),
         ),

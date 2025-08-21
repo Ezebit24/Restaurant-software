@@ -60,6 +60,7 @@ flutter:
     - assets/images/
     - assets/images/OrdersPage/
     - assets/font/
+    - assets/icons/chef/
 
   # This is the correct way to add and name your font family
   fonts:

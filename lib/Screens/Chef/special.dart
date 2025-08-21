@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:restureant_app/Screens/home.dart';
+import 'package:restureant_app/Screens/Chef/home.dart';
+import 'package:restureant_app/Screens/Chef/order.dart';
 
-// This is the main class for the Orders screen.
-class Orders extends StatefulWidget {
+// This is the main class for the TodaySpecial screen.
+class TodaySpecial extends StatefulWidget {
   @override
-  _OrdersState createState() => _OrdersState();
+  _TodaySpecialState createState() => _TodaySpecialState();
 }
 
-class _OrdersState extends State<Orders> {
+class _TodaySpecialState extends State<TodaySpecial> {
   // Helper method to build the special item widgets.
-  // It has been moved inside this class to resolve the error.
   Widget _buildSpecialItem(String imagePath, {double? width, double? height}) {
     return Container(
       // Use BoxConstraints to ensure the image is responsive
-      // It will not be smaller than 40x40 and has a flexible max width/height
       constraints: BoxConstraints(
         maxWidth: width ?? double.infinity,
         maxHeight: height ?? double.infinity,
@@ -38,7 +37,6 @@ class _OrdersState extends State<Orders> {
   }
 
   // Helper method to build the category cards.
-  // It has also been moved inside this class.
   Widget _buildCategoryCard(String title, String imageUrl) {
     return LayoutBuilder(
       // LayoutBuilder allows the widget to adapt to the constraints of its parent
@@ -132,12 +130,8 @@ class _OrdersState extends State<Orders> {
     final bool isLandscape = screenWidth > screenHeight;
 
     // Responsive padding calculated as a percentage of screen size
-    final double horizontalPadding = isTablet
-        ? screenWidth * 0.06
-        : screenWidth * 0.04;
-    final double verticalPadding = isTablet
-        ? screenHeight * 0.02
-        : screenHeight * 0.015;
+    final double horizontalPadding = screenWidth * (isTablet ? 0.06 : 0.04);
+    final double verticalPadding = screenHeight * (isTablet ? 0.02 : 0.015);
 
     // Dynamic header height based on screen size, with clamping
     final double headerHeight = isTablet
@@ -147,10 +141,14 @@ class _OrdersState extends State<Orders> {
     return Scaffold(
       backgroundColor: Colors.grey[50],
       body: Container(
+        width: double.infinity,
+        height: double.infinity,
         decoration: const BoxDecoration(
           image: DecorationImage(
             image: AssetImage('assets/Images/bgImg.png'),
-            fit: BoxFit.cover,
+            fit: BoxFit
+                .cover, // This ensures the image covers the entire container
+            alignment: Alignment.center,
           ),
         ),
         child: SafeArea(
@@ -173,37 +171,39 @@ class _OrdersState extends State<Orders> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // App Bar - Fixed spacing
+                      // App Bar - Responsive height
                       Container(
-                        height: isTablet ? 60 : 50,
+                        height: screenHeight * (isTablet ? 0.07 : 0.06),
                         child: Row(
                           children: [
                             Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                // Image size is based on tablet status
+                                // Image size is percentage-based
                                 Container(
+                                  width: screenWidth * (isTablet ? 0.08 : 0.06),
+                                  height:
+                                      screenWidth * (isTablet ? 0.08 : 0.06),
                                   constraints: BoxConstraints(
                                     minWidth: 24,
                                     minHeight: 24,
-                                    maxWidth: isTablet ? 40 : 30,
-                                    maxHeight: isTablet ? 40 : 30,
+                                    maxWidth: 40,
+                                    maxHeight: 40,
                                   ),
                                   child: Image.asset(
                                     'assets/images/hat.png',
-                                    width: isTablet ? 35 : 25,
-                                    height: isTablet ? 35 : 25,
                                     fit: BoxFit.contain,
                                   ),
                                 ),
-                                const SizedBox(height: 4),
-                                // Font size adapts to tablet status
+                                SizedBox(height: screenHeight * 0.005),
+                                // Font size is percentage-based
                                 Text(
                                   'Hotbox Kitchen',
                                   style: GoogleFonts.belgrano(
                                     color: Colors.black,
                                     fontWeight: FontWeight.w600,
-                                    fontSize: isTablet ? 16 : 12,
+                                    fontSize:
+                                        screenWidth * (isTablet ? 0.04 : 0.03),
                                   ),
                                 ),
                               ],
@@ -211,9 +211,7 @@ class _OrdersState extends State<Orders> {
                           ],
                         ),
                       ),
-
                       SizedBox(height: verticalPadding * 0.5),
-
                       // Welcome Message with header image - Fixed flex ratios
                       Expanded(
                         child: Container(
@@ -226,11 +224,13 @@ class _OrdersState extends State<Orders> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    // Font sizes adapt to tablet status
+                                    // Font sizes are percentage-based
                                     Text(
                                       'Good Morning',
                                       style: TextStyle(
-                                        fontSize: isTablet ? 32 : 24,
+                                        fontSize:
+                                            screenWidth *
+                                            (isTablet ? 0.08 : 0.06),
                                         fontWeight: FontWeight.bold,
                                         color: Colors.black87,
                                       ),
@@ -238,7 +238,9 @@ class _OrdersState extends State<Orders> {
                                     Text(
                                       'Anu',
                                       style: TextStyle(
-                                        fontSize: isTablet ? 32 : 24,
+                                        fontSize:
+                                            screenWidth *
+                                            (isTablet ? 0.08 : 0.06),
                                         fontWeight: FontWeight.bold,
                                         color: Colors.black87,
                                       ),
@@ -250,7 +252,9 @@ class _OrdersState extends State<Orders> {
                               Expanded(
                                 flex: 3,
                                 child: Container(
-                                  margin: const EdgeInsets.only(left: 10),
+                                  margin: EdgeInsets.only(
+                                    left: screenWidth * 0.025,
+                                  ),
                                   decoration: const BoxDecoration(
                                     borderRadius: BorderRadius.all(
                                       Radius.circular(10),
@@ -268,12 +272,10 @@ class _OrdersState extends State<Orders> {
                           ),
                         ),
                       ),
-
                       SizedBox(height: verticalPadding),
-
-                      // Search Bar - Fixed height
+                      // Search Bar - Responsive height
                       Container(
-                        height: isTablet ? 60 : 50,
+                        height: screenHeight * (isTablet ? 0.07 : 0.06),
                         decoration: BoxDecoration(
                           color: Colors.white.withOpacity(0.9),
                           borderRadius: BorderRadius.circular(25),
@@ -288,24 +290,29 @@ class _OrdersState extends State<Orders> {
                         child: Row(
                           children: [
                             SizedBox(width: horizontalPadding),
-                            // Icon size adapts to tablet status
+                            // Icon size is percentage-based
                             Icon(
                               Icons.search,
                               color: Colors.grey[600],
-                              size: isTablet ? 28 : 22,
+                              size: screenWidth * (isTablet ? 0.07 : 0.055),
                             ),
                             SizedBox(width: screenWidth * 0.03),
-                            const Expanded(
+                            Expanded(
                               child: TextField(
                                 decoration: InputDecoration(
                                   hintText: 'Search',
                                   hintStyle: TextStyle(
-                                    fontSize: 18,
-                                    color: Color.fromRGBO(158, 158, 158, 1),
+                                    fontSize: screenWidth * 0.045,
+                                    color: const Color.fromRGBO(
+                                      158,
+                                      158,
+                                      158,
+                                      1,
+                                    ),
                                     fontWeight: FontWeight.w400,
                                   ),
                                   border: InputBorder.none,
-                                  contentPadding: EdgeInsets.symmetric(
+                                  contentPadding: const EdgeInsets.symmetric(
                                     vertical: 0,
                                   ),
                                 ),
@@ -316,14 +323,16 @@ class _OrdersState extends State<Orders> {
                               icon: Icon(
                                 Icons.mic,
                                 color: Colors.grey[700],
-                                size: isTablet ? 26 : 20,
+                                size: screenWidth * (isTablet ? 0.065 : 0.05),
                               ),
-                              padding: const EdgeInsets.all(8),
+                              padding: EdgeInsets.zero,
                             ),
                             Container(
-                              width: isTablet ? 45 : 36,
-                              height: isTablet ? 45 : 36,
-                              margin: const EdgeInsets.only(right: 8),
+                              width: screenWidth * (isTablet ? 0.11 : 0.09),
+                              height: screenWidth * (isTablet ? 0.11 : 0.09),
+                              margin: EdgeInsets.only(
+                                right: screenWidth * 0.02,
+                              ),
                               decoration: BoxDecoration(
                                 color: const Color(0xFFFFE600),
                                 borderRadius: BorderRadius.circular(18),
@@ -333,7 +342,8 @@ class _OrdersState extends State<Orders> {
                                 icon: Icon(
                                   Icons.notifications,
                                   color: Colors.black87,
-                                  size: isTablet ? 22 : 18,
+                                  size:
+                                      screenWidth * (isTablet ? 0.055 : 0.045),
                                 ),
                                 padding: EdgeInsets.zero,
                               ),
@@ -356,17 +366,17 @@ class _OrdersState extends State<Orders> {
                       // Menu Button
                       Container(
                         width: double.infinity,
-                        height: isTablet ? 42 : 34,
+                        height: screenHeight * (isTablet ? 0.05 : 0.04),
                         decoration: BoxDecoration(
                           color: const Color(0xFFB8860B),
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Center(
                           child: Text(
-                            'Menu',
+                            'Today\'s Specials / Chef\'s Specials',
                             style: TextStyle(
                               color: Colors.white,
-                              fontSize: isTablet ? 20 : 18,
+                              fontSize: screenWidth * (isTablet ? 0.05 : 0.045),
                               fontWeight: FontWeight.w600,
                             ),
                           ),
@@ -375,130 +385,11 @@ class _OrdersState extends State<Orders> {
 
                       SizedBox(height: verticalPadding * 1.5),
 
-                      // Today's Specials
-                      Container(
-                        width: double.infinity,
-                        padding: EdgeInsets.symmetric(
-                          vertical: isTablet ? 30 : 24,
-                          horizontal: isTablet ? 32 : 24,
-                        ),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFFFC107),
-                          borderRadius: BorderRadius.circular(24),
-                        ),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            // Special items
-                            LayoutBuilder(
-                              builder: (context, constraints) {
-                                // The item size is calculated based on the parent width,
-                                // with a clamp to keep it from getting too big or small
-                                final double itemSize =
-                                    (constraints.maxWidth / 3.8).clamp(
-                                      60.0,
-                                      100.0,
-                                    );
-                                return Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    _buildSpecialItem(
-                                      'assets/Images/spec1.png',
-                                      width: itemSize,
-                                      height: itemSize,
-                                    ),
-                                    _buildSpecialItem(
-                                      'assets/Images/spec2.png',
-                                      width: itemSize * 1.1,
-                                      height: itemSize,
-                                    ),
-                                    _buildSpecialItem(
-                                      'assets/Images/spec3.png',
-                                      width: itemSize,
-                                      height: itemSize,
-                                    ),
-                                  ],
-                                );
-                              },
-                            ),
-
-                            SizedBox(height: isTablet ? 20 : 16),
-
-                            Text(
-                              "Today's Specials / Chef's Specials",
-                              style: TextStyle(
-                                fontSize: isTablet ? 22 : 18,
-                                fontWeight: FontWeight.w800,
-                                color: Colors.black,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                          ],
-                        ),
-                      ),
-
-                      SizedBox(height: verticalPadding * 1.5),
-
-                      // Category Grid
-                      LayoutBuilder(
-                        builder: (context, constraints) {
-                          final double spacing = isTablet ? 16 : 12;
-                          return GridView.count(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            // The number of columns is fixed at 3
-                            crossAxisCount: 3,
-                            // Spacing is based on tablet status
-                            crossAxisSpacing: spacing,
-                            mainAxisSpacing: spacing,
-                            // The child aspect ratio maintains a consistent shape
-                            childAspectRatio: 0.79,
-                            children: [
-                              _buildCategoryCard(
-                                'Starters',
-                                'assets/Images/food.png',
-                              ),
-                              _buildCategoryCard(
-                                'Main Course',
-                                'assets/Images/OrdersPage/mainCourse.png',
-                              ),
-                              _buildCategoryCard(
-                                'Breads',
-                                'assets/Images/OrdersPage/breads.png',
-                              ),
-                              _buildCategoryCard(
-                                'Noodles &\nPasta',
-                                'assets/Images/OrdersPage/noodles.png',
-                              ),
-                              _buildCategoryCard(
-                                'Sides &\nSnacks',
-                                'assets/Images/OrdersPage/sides.png',
-                              ),
-                              _buildCategoryCard(
-                                'Beverages',
-                                'assets/Images/OrdersPage/bev.png',
-                              ),
-                              _buildCategoryCard(
-                                'Meals',
-                                'assets/Images/OrdersPage/meal.png',
-                              ),
-                              _buildCategoryCard(
-                                'Desserts',
-                                'assets/Images/OrdersPage/dessert.png',
-                              ),
-                              _buildCategoryCard(
-                                'Diet',
-                                'assets/Images/OrdersPage/diet.png',
-                              ),
-                            ],
-                          );
-                        },
-                      ),
+                      // Chef's Specials Grid
+                      ChefsSpecialsGrid(),
 
                       // Bottom padding for floating action button
-                      SizedBox(height: isTablet ? 100 : 90),
+                      SizedBox(height: screenHeight * (isTablet ? 0.12 : 0.11)),
                     ],
                   ),
                 ),
@@ -509,6 +400,257 @@ class _OrdersState extends State<Orders> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: const BottomNavigation(),
+    );
+  }
+}
+
+// Chef's Specials Grid Widget
+class ChefsSpecialsGrid extends StatelessWidget {
+  final List<Map<String, dynamic>> specials = [
+    {
+      "title": "Grilled Lemon Butter Salmon",
+      "image": "assets/Images/OrdersPage/spec1.png",
+      "type": "Non-Veg",
+      "isVeg": false,
+      "description":
+          "A Perfect blend of fresh herbs, Creamy butter, and tangy lemon, served with seasonal vegetables and garlic mashed potatoes.",
+      "price": "\$ 450",
+      "combo": "Combo Available - Add Soup for \$ 100",
+    },
+    {
+      "title": "Baingan Bharta",
+      "image": "assets/Images/OrdersPage/spec2.png",
+      "type": "Veg",
+      "isVeg": true,
+      "description":
+          "Smoky roasted eggplant mashed and simmered with vibrant spices, fresh tomatoes, onions, and cilantro, creating a flavorful and comforting Indian dish",
+      "price": "\$ 399",
+      "combo": "Combo Available - Add Soup for \$ 100",
+    },
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    final Size size = MediaQuery.of(context).size;
+    final double screenWidth = size.width;
+    final double screenHeight = size.height;
+    final bool isTablet = screenWidth > 600;
+
+    return GridView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: specials.length,
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        crossAxisSpacing: screenWidth * 0.03,
+        mainAxisSpacing: screenWidth * 0.03,
+        childAspectRatio: isTablet ? 0.65 : 0.58,
+      ),
+      itemBuilder: (context, index) {
+        final item = specials[index];
+        return _buildSpecialCard(
+          imagePath: item["image"],
+          title: item["title"],
+          isVeg: item["isVeg"],
+          description: item["description"],
+          price: item["price"],
+          combo: item["combo"],
+          context: context,
+        );
+      },
+    );
+  }
+
+  Widget _buildSpecialCard({
+    required String imagePath,
+    required String title,
+    required bool isVeg,
+    required String description,
+    required String price,
+    required String combo,
+    required BuildContext context,
+  }) {
+    final Size size = MediaQuery.of(context).size;
+    final double screenWidth = size.width;
+    final double screenHeight = size.height;
+    final bool isTablet = screenWidth > 600;
+
+    return Container(
+      decoration: BoxDecoration(
+        color: const Color(0xFFFFD700), // Golden yellow color
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            spreadRadius: 2,
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Padding(
+        padding: EdgeInsets.all(screenWidth * (isTablet ? 0.05 : 0.04)),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Header
+            Text(
+              'Chef\'s Specials',
+              style: TextStyle(
+                fontSize: screenWidth * (isTablet ? 0.04 : 0.035),
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+              ),
+            ),
+            SizedBox(height: screenHeight * (isTablet ? 0.015 : 0.01)),
+
+            // Food Image
+            Container(
+              height: screenHeight * (isTablet ? 0.12 : 0.1),
+              width: double.infinity,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                color: Colors.white,
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: Image.asset(
+                  imagePath,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Container(
+                      color: Colors.grey[300],
+                      child: Center(
+                        child: Icon(
+                          Icons.image_not_supported,
+                          color: Colors.grey,
+                          size: screenWidth * 0.1,
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ),
+            SizedBox(height: screenHeight * (isTablet ? 0.015 : 0.01)),
+
+            // Title
+            Text(
+              title,
+              style: TextStyle(
+                fontSize: screenWidth * (isTablet ? 0.035 : 0.03),
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+              ),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+            SizedBox(height: screenHeight * (isTablet ? 0.01 : 0.008)),
+
+            // Veg/Non-Veg indicator
+            Row(
+              children: [
+                Container(
+                  width: screenWidth * (isTablet ? 0.04 : 0.035),
+                  height: screenWidth * (isTablet ? 0.04 : 0.035),
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: isVeg ? Colors.green : Colors.red,
+                      width: 2,
+                    ),
+                  ),
+                  child: Center(
+                    child: Container(
+                      width: screenWidth * (isTablet ? 0.02 : 0.015),
+                      height: screenWidth * (isTablet ? 0.02 : 0.015),
+                      decoration: BoxDecoration(
+                        color: isVeg ? Colors.green : Colors.red,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(width: screenWidth * 0.015),
+                Text(
+                  isVeg ? 'Veg' : 'Non-Veg',
+                  style: TextStyle(
+                    fontSize: screenWidth * (isTablet ? 0.03 : 0.025),
+                    color: Colors.black,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: screenHeight * (isTablet ? 0.012 : 0.01)),
+
+            // Description
+            Expanded(
+              child: Text(
+                description,
+                style: TextStyle(
+                  fontSize: screenWidth * (isTablet ? 0.028 : 0.023),
+                  color: Colors.black87,
+                  height: 1.3,
+                ),
+                maxLines: isTablet ? 4 : 3,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            SizedBox(height: screenHeight * (isTablet ? 0.015 : 0.01)),
+
+            // Price
+            Text(
+              price,
+              style: TextStyle(
+                fontSize: screenWidth * (isTablet ? 0.04 : 0.035),
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+              ),
+            ),
+            SizedBox(height: screenHeight * (isTablet ? 0.008 : 0.005)),
+
+            // Combo text
+            Text(
+              combo,
+              style: TextStyle(
+                fontSize: screenWidth * (isTablet ? 0.025 : 0.02),
+                color: Colors.black87,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+            SizedBox(height: screenHeight * (isTablet ? 0.015 : 0.01)),
+
+            // Order Now button
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () {
+                  // Add order functionality here
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFFB8860B), // Sandy brown color
+                  foregroundColor: Colors.white,
+                  padding: EdgeInsets.symmetric(
+                    vertical: screenHeight * (isTablet ? 0.012 : 0.01),
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(25),
+                  ),
+                  elevation: 2,
+                ),
+                child: Text(
+                  'Order Now',
+                  style: TextStyle(
+                    fontSize: screenWidth * (isTablet ? 0.03 : 0.025),
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -524,16 +666,17 @@ class BottomNavigation extends StatelessWidget {
     BuildContext context,
   ) {
     final Size size = MediaQuery.of(context).size;
-    final bool isTablet = size.width > 600;
-    // Icon size is based on tablet status
-    final double iconSize = isTablet ? 28 : 22;
+    final double screenWidth = size.width;
+    final bool isTablet = screenWidth > 600;
+    // Icon size is percentage-based
+    final double iconSize = screenWidth * (isTablet ? 0.07 : 0.055);
 
     return GestureDetector(
       onTap: onTap,
       child: Container(
         padding: EdgeInsets.symmetric(
-          horizontal: isTablet ? 20 : 16,
-          vertical: isTablet ? 12 : 8,
+          horizontal: screenWidth * (isTablet ? 0.05 : 0.04),
+          vertical: screenWidth * (isTablet ? 0.03 : 0.02),
         ),
         decoration: BoxDecoration(
           color: isActive ? Colors.white.withOpacity(0.1) : Colors.transparent,
@@ -556,10 +699,12 @@ class BottomNavigation extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
-    final bool isTablet = size.width > 600;
-    // Navigation bar height and margin are based on tablet status
-    final double navHeight = isTablet ? 70 : 59;
-    final double margin = isTablet ? 30 : 20;
+    final double screenWidth = size.width;
+    final double screenHeight = size.height;
+    final bool isTablet = screenWidth > 600;
+    // Navigation bar height and margin are percentage-based
+    final double navHeight = screenHeight * (isTablet ? 0.08 : 0.07);
+    final double margin = screenWidth * (isTablet ? 0.08 : 0.05);
 
     return Container(
       margin: EdgeInsets.all(margin),
@@ -575,7 +720,7 @@ class BottomNavigation extends StatelessWidget {
           ),
         ],
       ),
-      child: Row(
+      child:Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           _buildNavItem('assets/images/home_icon.png', false, () {
@@ -584,9 +729,24 @@ class BottomNavigation extends StatelessWidget {
               MaterialPageRoute(builder: (context) => const HomePage()),
             );
           }, context),
-          _buildNavItem('assets/images/kitchen.png', true, null, context),
-          _buildNavItem('assets/images/chef-hat.png', false, null, context),
-          _buildNavItem('assets/images/user.png', false, null, context),
+          _buildNavItem('assets/images/kitchen.png', false, () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => Orders()),
+            );
+          }, context),
+          _buildNavItem('assets/images/chef-hat.png', false, () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const HomePage()),
+            );
+          }, context),
+          _buildNavItem('assets/images/user.png', false, () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const HomePage()),
+            );
+          }, context),
         ],
       ),
     );

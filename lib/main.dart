@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:restureant_app/Screens/chefdash.dart';
-import 'package:restureant_app/Screens/home.dart';
-import 'package:restureant_app/Screens/order.dart';
-import 'package:restureant_app/onboarding_pages/initial_page.dart';
+import 'package:restureant_app/Screens/Chef/home/active.dart';
+import 'package:restureant_app/Screens/Chef/home/staff.dart';
+import 'package:restureant_app/Screens/Chef/home/table_stat.dart';
+import 'package:restureant_app/Screens/Chef/maincourse.dart';
+import 'package:restureant_app/tests/thome.dart';
 
 void main() {
   runApp(MyApp());
@@ -15,7 +16,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Hotbox Kitchen',
       theme: ThemeData(primarySwatch: Colors.blue),
-      home: HotboxKitchenScreen(),
+      home: TableStatus(),
     );
   }
 }
