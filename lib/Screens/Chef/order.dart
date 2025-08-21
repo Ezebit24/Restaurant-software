@@ -7,7 +7,6 @@ import 'package:restureant_app/Screens/Chef/maincourse.dart';
 
 // Placeholder classes for navigation targets
 
-
 class Breads extends StatelessWidget {
   const Breads({super.key});
 
@@ -452,7 +451,7 @@ class _OrdersState extends State<Orders> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) =>  TodaySpecial(),
+                              builder: (context) => TodaySpecial(),
                             ),
                           );
                         },
@@ -552,7 +551,7 @@ class _OrdersState extends State<Orders> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) =>  MainCourse(),
+                                      builder: (context) => MainCourse(),
                                     ),
                                   );
                                 },
@@ -674,15 +673,16 @@ class BottomNavigation extends StatelessWidget {
     BuildContext context,
   ) {
     final Size size = MediaQuery.of(context).size;
-    final bool isTablet = size.width > 600;
-    final double iconSize = isTablet ? 28 : 22;
-
+    final double screenWidth = size.width;
+    final bool isTablet = screenWidth > 600;
+    // Icon size is percentage-based
+    final double iconSize = screenWidth * (isTablet ? 0.07 : 0.055);
     return GestureDetector(
       onTap: onTap,
       child: Container(
         padding: EdgeInsets.symmetric(
-          horizontal: isTablet ? 20 : 16,
-          vertical: isTablet ? 12 : 8,
+          horizontal: screenWidth * (isTablet ? 0.05 : 0.04),
+          vertical: screenWidth * (isTablet ? 0.03 : 0.02),
         ),
         decoration: BoxDecoration(
           color: isActive ? Colors.white.withOpacity(0.1) : Colors.transparent,
@@ -705,10 +705,12 @@ class BottomNavigation extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
-    final bool isTablet = size.width > 600;
-    final double navHeight = isTablet ? 70 : 59;
-    final double margin = isTablet ? 30 : 20;
-
+    final double screenWidth = size.width;
+    final double screenHeight = size.height;
+    final bool isTablet = screenWidth > 600;
+    // Navigation bar height and margin are percentage-based
+    final double navHeight = screenHeight * (isTablet ? 0.08 : 0.07);
+    final double margin = screenWidth * (isTablet ? 0.08 : 0.05);
     return Container(
       margin: EdgeInsets.all(margin),
       height: navHeight,
@@ -732,9 +734,24 @@ class BottomNavigation extends StatelessWidget {
               MaterialPageRoute(builder: (context) => const HomePage()),
             );
           }, context),
-          _buildNavItem('assets/images/kitchen.png', true, null, context),
-          _buildNavItem('assets/images/chef-hat.png', false, null, context),
-          _buildNavItem('assets/images/user.png', false, null, context),
+          _buildNavItem('assets/images/kitchen.png', false, () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => Orders()),
+            );
+          }, context),
+          _buildNavItem('assets/images/chef-hat.png', false, () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const HomePage()),
+            );
+          }, context),
+          _buildNavItem('assets/images/user.png', false, () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const HomePage()),
+            );
+          }, context),
         ],
       ),
     );
